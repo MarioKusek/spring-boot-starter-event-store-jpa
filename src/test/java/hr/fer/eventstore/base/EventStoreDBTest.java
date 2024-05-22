@@ -11,9 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
+import hr.fer.eventstore.base.EventMapper.ClassTriple;
 import hr.fer.eventstore.base.jpa.EventJpaRepository;
 import hr.fer.eventstore.base.jpa.TestContainersDbFixture;
-
 
 @DataJpaTest(showSql = true, properties = {
     "logging.level.org.springframework.test.context.transaction=TRACE"
@@ -28,9 +28,9 @@ class EventStoreDBTest extends TestContainersDbFixture {
   @BeforeEach
   void setup() {
     repo.deleteAll();
-    Map<String, Class<? extends String>> eventTypeToClassMap = Map.of(
-        "string1", String.class);
-    store = new EventStoreDB<>(repo, eventTypeToClassMap);
+    List<ClassTriple> types = List.of(EventMapper.ClassTriple.classTriple("string", 1, String.class));
+    EventMapper<String> mapper = new EventMapper<>(types);
+    store = new EventStoreDB<>(repo, mapper);
   }
 
   @Test

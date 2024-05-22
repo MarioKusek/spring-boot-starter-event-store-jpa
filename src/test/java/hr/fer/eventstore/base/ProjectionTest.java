@@ -3,6 +3,7 @@ package hr.fer.eventstore.base;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
+import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 
@@ -18,12 +19,13 @@ class ProjectionTest {
       }
 
       @Override
-      public String update(String currentState, String event) {
-        return currentState + "|" + event;
+      public String update(String currentState, Event<String> event) {
+        return currentState + "|" + event.eventData();
       }
     };
 
-    assertThat(p.fold(List.of("e1", "e2", "e3"))).isEqualTo("|e1|e2|e3");
+    List<Event<String>> events = Event.createList("projection", "e", 1, List.of("e1", "e2", "e3"), Map.of());
+    assertThat(p.fold(events)).isEqualTo("|e1|e2|e3");
   }
 
 
@@ -31,9 +33,9 @@ class ProjectionTest {
   void projectionWithLambdas() throws Exception {
     Projection<String, String> p = Projection.create(
         () -> "",
-        (String state, String event) -> state + "|" + event);
+        (String state, Event<String> event) -> state + "|" + event.eventData());
 
-    assertThat(p.fold(List.of("e1", "e2", "e3"))).isEqualTo("|e1|e2|e3");
+    assertThat(p.fold(Event.createList("perojection", "e", 1, List.of("e1", "e2", "e3"), Map.of()))).isEqualTo("|e1|e2|e3");
   }
 
 }

@@ -3,23 +3,19 @@ package hr.fer.eventstore.base;
 import java.util.List;
 import java.util.Map;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
+import hr.fer.eventstore.base.EventMapper.TypeVersion;
 import hr.fer.eventstore.base.jpa.EventJpaEntity;
 import hr.fer.eventstore.base.jpa.EventJpaRepository;
 import io.hypersistence.tsid.TSID.Factory;
 import jakarta.transaction.Transactional;
 
 public class EventStoreDB<D> implements EventStore<D> {
-  private Map<String, Class<? extends D>> eventTypeToClassMap;
-  private static ObjectMapper mapper = new ObjectMapper();
-
+  private EventMapper<D> eventMapper;
   private EventJpaRepository repo;
 
-  public EventStoreDB(EventJpaRepository repo, Map<String, Class<? extends D>> eventTypeToClassMap) {
+  public EventStoreDB(EventJpaRepository repo, EventMapper<D> mapper) {
     this.repo = repo;
-    this.eventTypeToClassMap = eventTypeToClassMap;
+    eventMapper = mapper;
   }
 
   @Override
@@ -31,7 +27,7 @@ public class EventStoreDB<D> implements EventStore<D> {
 
   @Override
   @Transactional
-  public void append(List<Event<D>> newEvents) {
+  public void appendAll(List<Event<D>> newEvents) {
     for(Event<D> event: newEvents) {
       int nextVersion = calculateNextVersion(event.streamId());
       EventJpaEntity eventEntity = createEventEntity(event, nextVersion);
@@ -40,15 +36,33 @@ public class EventStoreDB<D> implements EventStore<D> {
   }
 
   @Override
+  public void append(String streamId, D eventData, Map<String, String> metaData) {
+    Class<? extends D> eventClass = (Class<? extends D>) eventData.getClass();
+    TypeVersion vt = eventMapper.getEventTypeVersion(eventClass);
+    append(new Event<>(streamId, vt.type(), vt.version(), eventData, metaData));
+  }
+
+  @Override
   public List<Event<D>> getAllEvents() {
   return repo.findAll().stream()
-      .map(this::toEvent)
+      .map(eventMapper::toEvent)
       .toList();
   }
 
   @Override
-  public void evolve(EventProducer<Event<D>> eventProducer) {
-    append(eventProducer.produce(getAllEvents()));
+  public List<Event<D>> getAllEvents(String streamId) {
+    return repo.findAllByStreamId(streamId).stream()
+        .map(eventMapper::toEvent)
+        .toList();
+  }
+
+
+  // TODO dodati streamId
+  @Override
+  public void evolve(EventProducer<D> eventProducer) {
+    List<Event<D>> allEvents = getAllEvents();
+    List<Event<D>> produced = eventProducer.produce(allEvents);
+    appendAll(produced);
   }
 
   private EventJpaEntity createEventEntity(Event<D> event) {
@@ -63,7 +77,7 @@ public class EventStoreDB<D> implements EventStore<D> {
         version,
         event.eventType(),
         event.eventTypeVersion(),
-        toJson(event.eventData()),
+        eventMapper.toJson(event.eventData()),
         event.metaData()
         );
     return eventEntity;
@@ -71,29 +85,5 @@ public class EventStoreDB<D> implements EventStore<D> {
 
   private int calculateNextVersion(String streamId) {
     return (int) repo.countByStreamId(streamId);
-  }
-
-  private String toJson(D eventData) {
-    try {
-      return mapper.writeValueAsString(eventData);
-    } catch (JsonProcessingException e) {
-      throw new RuntimeException("Can not convert event data object to JSON", e);
-    }
-  }
-
-  private Event<D> toEvent(EventJpaEntity eventEntity) {
-    String eventTypeKey = eventEntity.getEventType() + eventEntity.getEventTypeVersion();
-    try {
-      D data = mapper.readValue(eventEntity.getData(),
-          eventTypeToClassMap.get(eventTypeKey));
-      return new Event<>(
-          eventEntity.getStreamId(),
-          eventEntity.getEventType(),
-          eventEntity.getEventTypeVersion(),
-          data,
-          eventEntity.getMeta());
-    } catch (JsonProcessingException e) {
-      throw new RuntimeException("Can not parse event data (JSON) from DB", e);
-    }
   }
 }
