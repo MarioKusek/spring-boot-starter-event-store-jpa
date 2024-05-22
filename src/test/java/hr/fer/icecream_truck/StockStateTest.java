@@ -1,6 +1,5 @@
 package hr.fer.icecream_truck;
 
-import static hr.fer.eventstore.base.EventMapper.ClassTriple.classTriple;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
@@ -28,7 +27,7 @@ class StockStateTest extends EventStoreJpaFixture {
   @Test
   void initialStock() {
     List<ClassTriple> types = List.of(
-        classTriple("restocked", 0, FlavourRestocked.class));
+        EventMapper.classTriple("restocked", 0, FlavourRestocked.class));
     EventStore<TruckEventData> store = createStore(types, new EventMapper<>(types));
 
     store.append("truck-1", new FlavourRestocked("v", 2));
@@ -42,8 +41,8 @@ class StockStateTest extends EventStoreJpaFixture {
   @Test
   void someSoldStock() {
     List<ClassTriple> types = List.of(
-        classTriple("restocked", 0, FlavourRestocked.class),
-        classTriple("sold", 0, FlavourSold.class));
+        EventMapper.classTriple("restocked", 0, FlavourRestocked.class),
+        EventMapper.classTriple("sold", 0, FlavourSold.class));
     EventStore<TruckEventData> store = createStore(types, new EventMapper<>(types));
 
     store.append("truck-1", new FlavourRestocked("v", 3));

@@ -28,7 +28,7 @@ class EventStoreDBTest extends TestContainersDbFixture {
   @BeforeEach
   void setup() {
     repo.deleteAll();
-    List<ClassTriple> types = List.of(EventMapper.ClassTriple.classTriple("string", 1, String.class));
+    List<ClassTriple> types = List.of(EventMapper.classTriple("string", 1, String.class));
     EventMapper<String> mapper = new EventMapper<>(types);
     store = new EventStoreDB<>(repo, mapper);
   }

@@ -15,11 +15,6 @@ public class EventMapper<D> {
   public static record TypeVersion(String type, int version) {}
 
   public static record ClassTriple(String eventType, int eventTypeVersion, Class<?> clazz) {
-    // TODO prebaciti u vanjsku klasu
-    public static ClassTriple classTriple(String eventType, int eventTypeVersion, Class<?> clazz) {
-      return new ClassTriple(eventType, eventTypeVersion, clazz);
-    }
-
     public TypeVersion typeVersion() {
       return new TypeVersion(eventType, eventTypeVersion);
     }
@@ -63,6 +58,10 @@ public class EventMapper<D> {
     } catch (JsonProcessingException e) {
       throw new RuntimeException("Can not parse event data (JSON) from DB", e);
     }
+  }
+
+  public static ClassTriple classTriple(String eventType, int eventTypeVersion, Class<?> clazz) {
+    return new ClassTriple(eventType, eventTypeVersion, clazz);
   }
 
 }
