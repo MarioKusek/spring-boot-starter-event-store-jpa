@@ -17,4 +17,5 @@ public interface EventStore<D> {
   List<Event<D>> getAllEvents(String streamId);
 
   void evolve(EventProducer<D> eventProducer);
+  void evolve(String streamId, EventProducer<D> eventProducer);
 }

@@ -40,4 +40,10 @@ public class EventStoreInMemory<E> implements EventStore<E> {
     throw new UnsupportedOperationException();
   }
 
+  @Override
+  public void evolve(String streamId, EventProducer<E> eventProducer) {
+    // TODO implementirati
+    throw new UnsupportedOperationException();
+  }
+
 }

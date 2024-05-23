@@ -56,12 +56,17 @@ public class EventStoreDB<D> implements EventStore<D> {
         .toList();
   }
 
-
-  // TODO dodati streamId
   @Override
   public void evolve(EventProducer<D> eventProducer) {
     List<Event<D>> allEvents = getAllEvents();
     List<Event<D>> produced = eventProducer.produce(allEvents);
+    appendAll(produced);
+  }
+
+  @Override
+  public void evolve(String streamId, EventProducer<D> eventProducer) {
+    List<Event<D>> allStreamEvents = getAllEvents(streamId);
+    List<Event<D>> produced = eventProducer.produce(allStreamEvents);
     appendAll(produced);
   }
 
