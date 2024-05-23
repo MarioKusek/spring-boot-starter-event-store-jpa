@@ -1,11 +1,13 @@
-package hr.fer.eventstore.base;
+package hr.fer.eventstore.base.jpa;
 
 import java.util.List;
 import java.util.Map;
 
+import hr.fer.eventstore.base.Event;
+import hr.fer.eventstore.base.EventMapper;
+import hr.fer.eventstore.base.EventProducer;
+import hr.fer.eventstore.base.EventStore;
 import hr.fer.eventstore.base.EventMapper.TypeVersion;
-import hr.fer.eventstore.base.jpa.EventJpaEntity;
-import hr.fer.eventstore.base.jpa.EventJpaRepository;
 import io.hypersistence.tsid.TSID.Factory;
 import jakarta.transaction.Transactional;
 

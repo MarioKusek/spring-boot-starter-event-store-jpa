@@ -8,7 +8,6 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import hr.fer.eventstore.base.EventMapper;
 import hr.fer.eventstore.base.EventStore;
-import hr.fer.eventstore.base.EventStoreDB;
 import hr.fer.icecream_truck.events.TruckEventData;
 
 @DataJpaTest

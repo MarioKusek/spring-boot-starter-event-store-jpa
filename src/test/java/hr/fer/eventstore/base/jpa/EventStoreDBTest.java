@@ -1,4 +1,4 @@
-package hr.fer.eventstore.base;
+package hr.fer.eventstore.base.jpa;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -11,9 +11,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
+import hr.fer.eventstore.base.Event;
+import hr.fer.eventstore.base.EventMapper;
 import hr.fer.eventstore.base.EventMapper.ClassTriple;
 import hr.fer.eventstore.base.jpa.EventJpaRepository;
-import hr.fer.eventstore.base.jpa.TestContainersDbFixture;
+import hr.fer.eventstore.base.jpa.EventStoreDB;
 
 @DataJpaTest(showSql = true, properties = {
     "logging.level.org.springframework.test.context.transaction=TRACE"
