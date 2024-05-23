@@ -14,8 +14,6 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import hr.fer.eventstore.base.Event;
 import hr.fer.eventstore.base.EventMapper;
 import hr.fer.eventstore.base.EventMapper.ClassTriple;
-import hr.fer.eventstore.base.jpa.EventJpaRepository;
-import hr.fer.eventstore.base.jpa.EventStoreDB;
 
 @DataJpaTest(showSql = true, properties = {
     "logging.level.org.springframework.test.context.transaction=TRACE"
@@ -43,7 +41,7 @@ class EventStoreDBTest extends TestContainersDbFixture {
   @Test
   void appendOneEvent() throws Exception {
     String data = "e1";
-    store.append(createEvent(data));
+    store.append("user-mkusek", data);
 
     List<Event<String>> allEvents = store.getAllEvents();
     assertThat(allEvents).hasSize(1);
@@ -70,6 +68,20 @@ class EventStoreDBTest extends TestContainersDbFixture {
   }
 
   @Test
+  void appendMoreEventsInDifferentStreams() throws Exception {
+    store.append("user-mkusek", "e1");
+    store.append("user-pperic", "e2");
+    store.append("user-mkusek", "e3");
+
+    assertThat(store.getAllEvents("user-mkusek"))
+      .extracting("eventData")
+      .containsExactly("e1", "e3");
+    assertThat(store.getAllEvents("user-pperic"))
+      .extracting("eventData")
+      .containsExactly("e2");
+  }
+
+  @Test
   void evolveCommand() throws Exception {
     store.append(createEvent("e1"));
 
@@ -81,4 +93,16 @@ class EventStoreDBTest extends TestContainersDbFixture {
       .containsExactly("e1", "produced1", "produced2");
   }
 
+  @Test
+  void evolveCommandOverStream() throws Exception {
+    store.append("user-pperic", "e1");
+    store.append("user-mkusek", "e2");
+
+    store.evolve("user-mkusek", events -> List.of("produced1", "produced2")
+        .stream().map(t -> createEvent(t + "-" + events.size())).toList());
+
+    assertThat(store.getAllEvents("user-mkusek"))
+      .extracting("eventData")
+      .containsExactly("e2", "produced1-1", "produced2-1");
+  }
 }
