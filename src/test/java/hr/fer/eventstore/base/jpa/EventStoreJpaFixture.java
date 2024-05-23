@@ -1,7 +1,5 @@
 package hr.fer.eventstore.base.jpa;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -17,7 +15,7 @@ public abstract class EventStoreJpaFixture extends TestContainersDbFixture {
   @Autowired
   private EventJpaRepository repo;
 
-  protected EventStore<TruckEventData> createStore(List<hr.fer.eventstore.base.EventMapper.ClassTriple> types, EventMapper<TruckEventData> mapper) {
+  protected EventStore<TruckEventData> createStore(EventMapper<TruckEventData> mapper) {
     return new EventStoreDB<>(repo, mapper);
   }
 }

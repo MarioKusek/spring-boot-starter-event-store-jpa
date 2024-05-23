@@ -19,16 +19,15 @@ class StockStateTest extends EventStoreJpaFixture {
 
   @Test
   void nothingInStock() {
-    EventStore<TruckEventData> store = createStore(List.of(), new EventMapper<>(List.of()));
+    EventStore<TruckEventData> store = createStore(new EventMapper<>(List.of()));
 
     assertThat(new StockState().fold(store.getAllEvents())).isEqualTo(Map.of());
   }
 
   @Test
   void initialStock() {
-    List<ClassTriple> types = List.of(
-        EventMapper.classTriple("restocked", 0, FlavourRestocked.class));
-    EventStore<TruckEventData> store = createStore(types, new EventMapper<>(types));
+    EventStore<TruckEventData> store = createStore(new EventMapper<>(List.of(
+        EventMapper.classTriple("restocked", 0, FlavourRestocked.class))));
 
     store.append("truck-1", new FlavourRestocked("v", 2));
     store.append("truck-1", new FlavourRestocked("s", 2));
@@ -40,10 +39,9 @@ class StockStateTest extends EventStoreJpaFixture {
 
   @Test
   void someSoldStock() {
-    List<ClassTriple> types = List.of(
+    EventStore<TruckEventData> store = createStore(new EventMapper<>(List.of(
         EventMapper.classTriple("restocked", 0, FlavourRestocked.class),
-        EventMapper.classTriple("sold", 0, FlavourSold.class));
-    EventStore<TruckEventData> store = createStore(types, new EventMapper<>(types));
+        EventMapper.classTriple("sold", 0, FlavourSold.class))));
 
     store.append("truck-1", new FlavourRestocked("v", 3));
     store.append("truck-1", new FlavourRestocked("s", 2));
