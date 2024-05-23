@@ -26,6 +26,13 @@ public class EventStoreDB<D> implements EventStore<D> {
   }
 
   @Override
+  public void append(String streamId, D eventData, Map<String, String> metaData) {
+    Class<? extends D> eventClass = (Class<? extends D>) eventData.getClass();
+    TypeVersion vt = eventMapper.getEventTypeVersion(eventClass);
+    append(new Event<>(streamId, vt.type(), vt.version(), eventData, metaData));
+  }
+
+  @Override
   @Transactional
   public void appendAll(List<Event<D>> newEvents) {
     for(Event<D> event: newEvents) {
@@ -33,13 +40,6 @@ public class EventStoreDB<D> implements EventStore<D> {
       EventJpaEntity eventEntity = createEventEntity(event, nextVersion);
       repo.save(eventEntity);
     }
-  }
-
-  @Override
-  public void append(String streamId, D eventData, Map<String, String> metaData) {
-    Class<? extends D> eventClass = (Class<? extends D>) eventData.getClass();
-    TypeVersion vt = eventMapper.getEventTypeVersion(eventClass);
-    append(new Event<>(streamId, vt.type(), vt.version(), eventData, metaData));
   }
 
   @Override

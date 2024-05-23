@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Map;
 
 public interface EventStore<D> {
-  // TODO remove - use with streamId
   void append(Event<D> eventData);
   void append(String streamId, D eventData, Map<String,String> metaData);
   void appendAll(List<Event<D>> events);
