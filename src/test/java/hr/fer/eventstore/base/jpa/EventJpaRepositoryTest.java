@@ -55,7 +55,6 @@ class EventJpaRepositoryTest extends TestContainersDbFixture {
         createStubEventWithStreamId("sid2", 1)
     ));
 
-
     assertThat(repo.countByStreamId("sid1")).isEqualTo(2);
     assertThat(repo.countByStreamId("sid2")).isEqualTo(1);
   }
