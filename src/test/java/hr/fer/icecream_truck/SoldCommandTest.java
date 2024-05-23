@@ -15,13 +15,13 @@ import hr.fer.icecream_truck.events.FlavourWentOutOfStock;
 import hr.fer.icecream_truck.events.TruckEventData;
 
 class SoldCommandTest {
-  private EventFactory factory;
+  private TruckEventFactory factory;
   private Map<String, String> metaData;
   private Event<TruckEventData> truckCreated;
 
   @BeforeEach
   void setup() {
-    factory = new EventFactory();
+    factory = new TruckEventFactory();
     metaData = Map.of("user", "x");
     truckCreated = factory.createTruck(metaData);
   }

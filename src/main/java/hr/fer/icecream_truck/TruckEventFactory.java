@@ -14,10 +14,10 @@ import hr.fer.icecream_truck.events.TruckCreatedEvent;
 import hr.fer.icecream_truck.events.TruckEventData;
 import io.hypersistence.tsid.TSID;
 
-public class EventFactory {
+public class TruckEventFactory {
   private EventMapper<TruckEventData> mapper;
 
-  public EventFactory() {
+  public TruckEventFactory() {
     this.mapper = new EventMapper<>(List.of(
       EventMapper.classTriple("truckCreated", 1, TruckCreatedEvent.class),
       EventMapper.classTriple("flavourWasNotInStock", 1, FlavourWasNotInStock.class),

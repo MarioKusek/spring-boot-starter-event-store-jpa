@@ -10,11 +10,11 @@ import hr.fer.eventstore.base.EventProducer;
 import hr.fer.icecream_truck.events.TruckEventData;
 
 public class SoldCommand implements EventProducer<TruckEventData> {
-  private EventFactory factory;
+  private TruckEventFactory factory;
   private String flavour;
   private Map<String, String> metaData;
 
-  public SoldCommand(String flavour, EventFactory factory, Map<String, String> metaData) {
+  public SoldCommand(String flavour, TruckEventFactory factory, Map<String, String> metaData) {
     this.flavour = flavour;
     this.factory = factory;
     this.metaData = metaData;
