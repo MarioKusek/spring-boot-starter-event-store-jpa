@@ -9,13 +9,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import hr.fer.eventstore.base.Event;
-import hr.fer.eventstore.base.jpa.EventStoreJpaFixture;
 import hr.fer.icecream_truck.events.FlavourSold;
 import hr.fer.icecream_truck.events.FlavourWasNotInStock;
 import hr.fer.icecream_truck.events.FlavourWentOutOfStock;
 import hr.fer.icecream_truck.events.TruckEventData;
 
-class SoldCommandTest extends EventStoreJpaFixture {
+class SoldCommandTest {
   private EventFactory factory;
   private Map<String, String> metaData;
   private Event<TruckEventData> truckCreated;
