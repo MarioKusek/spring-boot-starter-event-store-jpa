@@ -1,30 +1,37 @@
 package hr.fer.icecream_truck;
 
 import java.util.List;
+import java.util.Map;
+
+import org.springframework.util.Assert;
 
 import hr.fer.eventstore.base.Event;
 import hr.fer.eventstore.base.EventProducer;
 import hr.fer.icecream_truck.events.TruckEventData;
 
 public class SoldCommand implements EventProducer<TruckEventData> {
-
+  private EventFactory factory;
   private String flavour;
+  private Map<String, String> metaData;
 
-  public SoldCommand(String flavour) {
+  public SoldCommand(String flavour, EventFactory factory, Map<String, String> metaData) {
     this.flavour = flavour;
+    this.factory = factory;
+    this.metaData = metaData;
   }
 
   @Override
   public List<Event<TruckEventData>> produce(List<Event<TruckEventData>> events) {
-    return null;
-    // TODO uncomment
-//    Map<String, Integer> state = new StockState().fold(events);
-//    int inStock = state.getOrDefault(flavour, 0);
-//    return switch(inStock) {
-//      case 0 -> List.of(new FlavourWasNotInStock(flavour));
-//      case 1 -> List.of(new FlavourSold(flavour), new FlavourWentOutOfStock(flavour));
-//      default -> List.of(new FlavourSold(flavour));
-//    };
+    Assert.notEmpty(events, "There sould be at least one event");
+    Event<TruckEventData> event = events.getFirst();
+
+    Map<String, Integer> state = new StockState().fold(events);
+    int inStock = state.getOrDefault(flavour, 0);
+    return switch(inStock) {
+      case 0 -> List.of(factory.flavourWasNotInStock(event.streamId(), flavour, metaData));
+      case 1 -> List.of(factory.flavourSold(event.streamId(), flavour, metaData), factory.flavourWentOutOfStock(event.streamId(), flavour, metaData));
+      default -> List.of(factory.flavourSold(event.streamId(), flavour, metaData));
+    };
   }
 
 }

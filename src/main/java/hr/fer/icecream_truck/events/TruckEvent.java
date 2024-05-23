@@ -6,6 +6,7 @@ import java.util.Map;
 import hr.fer.eventstore.base.Event;
 
 public class TruckEvent {
+  // TODO pitanje je ovo prebaciti u EventMapper?
   private static record EventTypeAndVersion(String name, int version) { }
   private static final Map<EventTypeAndVersion, Class<? extends TruckEventData>> NAME_TO_CLASS = new HashMap<>();
   private static final Map<Class<? extends TruckEventData>, EventTypeAndVersion> CLASS_TO_NAME = new HashMap<>();
@@ -22,6 +23,7 @@ public class TruckEvent {
     CLASS_TO_NAME.put(clazz, new EventTypeAndVersion(name, version));
   }
 
+  // TODO ovo je factory za TruckEventData
   public static Event<TruckEventData> create(TruckEventData data) {
     return new Event<>("truck", null, 0, null, null);
   }
