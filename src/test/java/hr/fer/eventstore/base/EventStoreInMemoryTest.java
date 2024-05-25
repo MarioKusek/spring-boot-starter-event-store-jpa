@@ -7,7 +7,7 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 
 class EventStoreInMemoryTest {
-  EventStore<String> store = new EventStoreInMemory<>();
+  EventStore<String> store = new EventStoreInMemory<>(null);
 
   @Test
   void noEventsAfterInitialization() throws Exception {

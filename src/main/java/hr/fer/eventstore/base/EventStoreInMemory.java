@@ -5,7 +5,12 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-public class EventStoreInMemory<E> implements EventStore<E> {
+public class EventStoreInMemory<E> extends EventStore<E> {
+
+  public EventStoreInMemory(EventMapper<E> mapper) {
+    super(mapper);
+  }
+
   private List<Event<E>> events = new LinkedList<>();
 
   @Override
