@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Map;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import hr.fer.eventstore.base.Event;
@@ -18,7 +17,6 @@ import hr.fer.icecream_truck.events.TruckEventData;
 
 class TruckIntegrationInMemoryTest {
 
-  @Disabled
   @Test
   void basicExamples() {
     TruckEventFactory factory = new TruckEventFactory();
@@ -44,7 +42,6 @@ class TruckIntegrationInMemoryTest {
     assertThat(store.getAllEvents(streamId)).hasSize(5);
   }
 
-  @Disabled
   @Test
   void evolveExample() {
     TruckEventFactory factory = new TruckEventFactory();
