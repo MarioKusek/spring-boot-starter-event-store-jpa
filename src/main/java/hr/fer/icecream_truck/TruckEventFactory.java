@@ -27,6 +27,10 @@ public class TruckEventFactory {
     ));
   }
 
+  public EventMapper<TruckEventData> getMapper() {
+    return mapper;
+  }
+
   public Event<TruckEventData> flavourWasNotInStock(String streamId, String flavour, Map<String, String> metaData) {
     FlavourWasNotInStock eventData = new FlavourWasNotInStock(flavour);
     TypeVersion et = mapper.getEventTypeVersion(FlavourWasNotInStock.class);
