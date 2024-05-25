@@ -4,6 +4,7 @@ import java.util.List;
 
 import hr.fer.eventstore.base.Event;
 import hr.fer.eventstore.base.EventMapper;
+import hr.fer.eventstore.base.EventMapper.TypeVersion;
 import hr.fer.eventstore.base.EventStore;
 import io.hypersistence.tsid.TSID.Factory;
 import jakarta.transaction.Transactional;
@@ -33,19 +34,32 @@ public class EventStoreDB<D> extends EventStore<D> {
 
   @Override
   public List<Event<D>> getAllEvents() {
-  return repo.findAll().stream()
-      .map(eventMapper::toEvent)
+    return repo.findAll().stream()
+      .map(EventStoreDB.this::toEvent)
       .toList();
   }
 
   @Override
   public List<Event<D>> getAllEvents(String streamId) {
     return repo.findAllByStreamId(streamId).stream()
-        .map(eventMapper::toEvent)
-        .toList();
+      .map(EventStoreDB.this::toEvent)
+      .toList();
   }
 
-    private EventJpaEntity createEventEntity(Event<D> event) {
+  private Event<D> toEvent(EventJpaEntity eventEntity) {
+    D data = eventMapper.toEventData(eventEntity.getData(),
+        new TypeVersion(eventEntity.getEventType(), eventEntity.getEventTypeVersion()));
+
+    return new Event<>(
+        eventEntity.getStreamId(),
+        eventEntity.getEventType(),
+        eventEntity.getEventTypeVersion(),
+        data,
+        eventEntity.getMeta());
+  }
+
+
+  private EventJpaEntity createEventEntity(Event<D> event) {
     EventJpaEntity eventEntity = createEventEntity(event, calculateNextVersion(event.streamId()));
     return eventEntity;
   }
@@ -58,8 +72,7 @@ public class EventStoreDB<D> extends EventStore<D> {
         event.eventType(),
         event.eventTypeVersion(),
         eventMapper.toJson(event.eventData()),
-        event.metaData()
-        );
+        event.metaData());
     return eventEntity;
   }
 

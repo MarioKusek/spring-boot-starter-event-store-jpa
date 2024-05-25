@@ -7,8 +7,6 @@ import java.util.Map;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import hr.fer.eventstore.base.jpa.EventJpaEntity;
-
 public class EventMapper<D> {
   private static final ObjectMapper mapper = new ObjectMapper();
 
@@ -44,17 +42,12 @@ public class EventMapper<D> {
     }
   }
 
-  public Event<D> toEvent(EventJpaEntity eventEntity) {
-    TypeVersion eventTypeKey = new TypeVersion(eventEntity.getEventType(), eventEntity.getEventTypeVersion());
+  public D toEventData(String jsonData, TypeVersion typeVersion) {
+    TypeVersion eventTypeKey = typeVersion;
     try {
-      D data = mapper.readValue(eventEntity.getData(),
+      D data = mapper.readValue(jsonData,
           eventTypeVersonToClassMap.get(eventTypeKey));
-      return new Event<>(
-          eventEntity.getStreamId(),
-          eventEntity.getEventType(),
-          eventEntity.getEventTypeVersion(),
-          data,
-          eventEntity.getMeta());
+      return data;
     } catch (JsonProcessingException e) {
       throw new RuntimeException("Can not parse event data (JSON) from DB", e);
     }
