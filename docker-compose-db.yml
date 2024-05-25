@@ -1,0 +1,28 @@
+services:
+  db:
+    image: docker.io/postgres:16.3
+    networks:
+      - es
+    ports:
+      - "127.0.0.1:5432:5432"
+    restart: unless-stopped
+    logging:
+      driver: "json-file"
+      options:
+        max-file: "5"
+        max-size: "10m"
+    environment:
+      POSTGRES_DB: eventStore
+      POSTGRES_USER: suser
+      POSTGRES_PASSWORD: spasswd
+      PGDATA: /opt/eventStore/postgresql
+    volumes:
+      - 'eventstore_data_fepa:/opt/eventStore/postgresql'
+
+
+volumes:
+  eventstore_data_fepa:
+    driver: local
+
+networks:
+  es:
