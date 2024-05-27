@@ -48,9 +48,12 @@ class TruckIntegrationDBTest extends EventStoreJpaFixture {
     EventStore<TruckEventData> store = createStore(factory.getMapper());
     Map<String, String> notImportantMetaData = Map.of();
 
+    // create truck
     Event<TruckEventData> truck = factory.createTruck(notImportantMetaData);
     store.append(truck);
+    // restock vanilija 1
     store.append(factory.flavourRestocked(truck.streamId(), "vanilija", 1, notImportantMetaData));
+
 
     Map<String, Integer> fold = new StockState().fold(store.getAllEvents(truck.streamId()));
     assertThat(fold).isEqualTo(Map.of("vanilija", 1));
@@ -60,7 +63,9 @@ class TruckIntegrationDBTest extends EventStoreJpaFixture {
           new TruckCreatedEvent(truck.streamId()),
           new FlavourRestocked("vanilija", 1));
 
-    store.evolve(new SoldCommand("vanilija", factory, notImportantMetaData));
+    // sold vanilija
+    store.evolve(truck.streamId(), new SoldCommand("vanilija", factory, notImportantMetaData));
+
     fold = new StockState().fold(store.getAllEvents(truck.streamId()));
     assertThat(fold).isEqualTo(Map.of("vanilija", 0));
     assertThat(store.getAllEvents(truck.streamId()))
