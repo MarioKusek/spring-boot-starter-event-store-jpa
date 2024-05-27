@@ -2,13 +2,12 @@ package hr.fer.icecream_truck;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.List;
 import java.util.Map;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import hr.fer.eventstore.base.EventMapper;
-import hr.fer.eventstore.base.EventMapper.ClassTriple;
+import hr.fer.eventstore.base.Event;
 import hr.fer.eventstore.base.EventStore;
 import hr.fer.eventstore.base.jpa.EventStoreJpaFixture;
 import hr.fer.icecream_truck.events.FlavourRestocked;
@@ -17,37 +16,50 @@ import hr.fer.icecream_truck.events.TruckEventData;
 
 class StockStateTest extends EventStoreJpaFixture {
 
+  private TruckEventFactory factory;
+  private EventStore<TruckEventData> store;
+  private Map<String, String> notImportantMetaData;
+  private String streamId;
+
+  @BeforeEach
+  void setup() {
+    factory = new TruckEventFactory();
+    store = createStore(factory.getMapper());
+    notImportantMetaData = Map.of();
+
+    Event<TruckEventData> truckCreated = factory.createTruck(notImportantMetaData);
+    store.append(truckCreated);
+    streamId = truckCreated.streamId();
+  }
+
   @Test
   void nothingInStock() {
-    EventStore<TruckEventData> store = createStore(new EventMapper<>(List.of()));
 
-    assertThat(new StockState().fold(store.getAllEvents())).isEqualTo(Map.of());
+    Map<String, Integer> foldResult = new StockState().fold(store.getAllEvents(streamId));
+
+    assertThat(foldResult).isEqualTo(Map.of());
   }
 
   @Test
   void initialStock() {
-    EventStore<TruckEventData> store = createStore(new EventMapper<>(List.of(
-        EventMapper.classTriple("restocked", 0, FlavourRestocked.class))));
+    store.append(streamId, new FlavourRestocked("v", 2));
+    store.append(streamId, new FlavourRestocked("s", 2));
+    store.append(streamId, new FlavourRestocked("v", 1));
 
-    store.append("truck-1", new FlavourRestocked("v", 2));
-    store.append("truck-1", new FlavourRestocked("s", 2));
-    store.append("truck-1", new FlavourRestocked("v", 1));
+    Map<String, Integer> foldResult = new StockState().fold(store.getAllEvents(streamId));
 
-    assertThat(new StockState().fold(store.getAllEvents("truck-1"))).isEqualTo(
-        Map.of("v", 3, "s", 2));
+    assertThat(foldResult).isEqualTo(Map.of("v", 3, "s", 2));
   }
 
   @Test
   void someSoldStock() {
-    EventStore<TruckEventData> store = createStore(new EventMapper<>(List.of(
-        EventMapper.classTriple("restocked", 0, FlavourRestocked.class),
-        EventMapper.classTriple("sold", 0, FlavourSold.class))));
+    store.append(streamId, new FlavourRestocked("v", 3));
+    store.append(streamId, new FlavourRestocked("s", 2));
+    store.append(streamId, new FlavourSold("s"));
 
-    store.append("truck-1", new FlavourRestocked("v", 3));
-    store.append("truck-1", new FlavourRestocked("s", 2));
-    store.append("truck-1", new FlavourSold("s"));
+    Map<String, Integer> foldResult = new StockState().fold(store.getAllEvents(streamId));
 
-    assertThat(new StockState().fold(store.getAllEvents("truck-1"))).isEqualTo(Map.of("v", 3, "s", 1));
+    assertThat(foldResult).isEqualTo(Map.of("v", 3, "s", 1));
   }
 
 }
