@@ -21,6 +21,7 @@ public class EventMapper<D> {
   private Map<TypeVersion, Class<? extends D>> eventTypeVersonToClassMap;
   private Map<Class<? extends D>, TypeVersion> classToEventTypeVersionMap;
 
+  @SuppressWarnings("unchecked")
   public EventMapper(List<ClassTriple> typeList) {
     this.classToEventTypeVersionMap = new HashMap<>();
     this.eventTypeVersonToClassMap = new HashMap<>();

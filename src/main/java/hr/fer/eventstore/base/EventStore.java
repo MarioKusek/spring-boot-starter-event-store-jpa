@@ -15,6 +15,7 @@ public abstract class EventStore<D> {
   public abstract void append(Event<D> eventData);
 
   public void append(String streamId, D eventData, Map<String, String> metaData) {
+    @SuppressWarnings("unchecked")
     Class<? extends D> eventClass = (Class<? extends D>) eventData.getClass();
     TypeVersion vt = eventMapper.getEventTypeVersion(eventClass);
     append(new Event<>(streamId, vt.type(), vt.version(), eventData, metaData));

@@ -1,4 +1,4 @@
-package hr.fer.eventstore.base.jpa;
+package hr.fer.eventstore.jpa;
 
 import java.util.List;
 

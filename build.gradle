@@ -1,10 +1,11 @@
 plugins {
-	id 'java'
-	id 'org.springframework.boot' version '3.2.5'
-	id 'io.spring.dependency-management' version '1.1.4'
+	id 'java-library'
+	id 'org.springframework.boot' version '3.3.0'
+	id 'io.spring.dependency-management' version '1.1.5'
+	id 'maven-publish'
 }
 
-group = 'hr.fer.eventstore.jpa'
+group = 'hr.fer.eventstore'
 version = '0.0.1-SNAPSHOT'
 
 ext {
@@ -13,6 +14,8 @@ ext {
 
 java {
 	sourceCompatibility = '21'
+    //withJavadocJar()
+    //withSourcesJar()
 }
 
 repositories {
@@ -20,8 +23,12 @@ repositories {
 }
 
 dependencies {
+	annotationProcessor "org.springframework.boot:spring-boot-autoconfigure-processor"
+	
+	implementation 'com.fasterxml.jackson.core:jackson-databind'
+	
+	implementation 'org.springframework.boot:spring-boot-starter'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'io.hypersistence:hypersistence-utils-hibernate-63:3.7.5'
 	runtimeOnly 'org.postgresql:postgresql'
 	
@@ -32,4 +39,19 @@ dependencies {
 
 tasks.named('test') {
 	useJUnitPlatform()
+}
+
+bootJar {
+    enabled = false
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            groupId = "${group}"
+            artifactId = "${project.name}"
+            version = "${version}"
+            from components.java
+        }
+    }
 }
