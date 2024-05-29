@@ -12,7 +12,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 @AutoConfiguration(after = {JpaRepositoriesAutoConfiguration.class})
 @ConditionalOnBean(DataSource.class)
 @ConditionalOnClass(JpaRepository.class)
-@Import({StarterEntityRegistrar.class})
+@Import({EventStoreConfiguration.class})
 public class EventStoreAutoConfiguration {
 
 }

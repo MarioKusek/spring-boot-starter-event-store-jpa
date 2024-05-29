@@ -2,6 +2,7 @@ package hr.fer.eventstore.jpa;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.transaction.annotation.Transactional;
 
@@ -67,6 +68,26 @@ public class EventRepositoryWithEntityManager implements EventRepository {
             delete
             from EventJpaEntity e
             """).executeUpdate();
+  }
+
+  @Override
+  public Optional<EventJpaEntity> findById(long id) {
+    return entityManager.createQuery("""
+        select e
+        from EventJpaEntity e
+        where
+            e.id = ?1
+        """)
+      .setParameter(1, id)
+      .getResultStream()
+      .findFirst();
+  }
+
+  @Transactional
+  @Override
+  public void saveAll(List<EventJpaEntity> list) {
+    for(var e: list)
+      save(e);
   }
 
 }

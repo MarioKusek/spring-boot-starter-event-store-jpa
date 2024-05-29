@@ -14,16 +14,14 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
-import hr.fer.eventstore.jpa.EventJpaEntity;
-import hr.fer.eventstore.jpa.EventJpaRepository;
 import io.hypersistence.tsid.TSID.Factory;
 
 @DataJpaTest(showSql = true)
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-class EventJpaRepositoryTest extends TestContainersDbFixture {
+class EventRepositoryTest extends TestContainersDbFixture {
 
   @Autowired
-  private EventJpaRepository repo;
+  private EventRepository repo;
 
   @Configuration
   @ComponentScan(basePackages = {"hr.fer.eventstore"})
@@ -48,7 +46,7 @@ class EventJpaRepositoryTest extends TestContainersDbFixture {
     event.setStreamId("user-login");
     event.setVersion(1);
 
-    repo.saveAndFlush(event);
+    repo.save(event);
 
     var loadedEvent = repo.findById(event.getId()).get();
     assertThat(loadedEvent.getData()).isEqualTo("\"test json\"");
@@ -61,7 +59,7 @@ class EventJpaRepositoryTest extends TestContainersDbFixture {
 
   @Test
   void countByStreamId() throws Exception {
-    repo.saveAllAndFlush(List.of(
+    repo.saveAll(List.of(
         createStubEventWithStreamId("sid1", 1),
         createStubEventWithStreamId("sid1", 2),
         createStubEventWithStreamId("sid2", 1)
@@ -73,7 +71,7 @@ class EventJpaRepositoryTest extends TestContainersDbFixture {
 
   @Test
   void findEventsByStreamId() throws Exception {
-    repo.saveAllAndFlush(List.of(
+    repo.saveAll(List.of(
         createStubEventWithStreamIdAndData("sid1", 1, "\"d1\""),
         createStubEventWithStreamIdAndData("sid1", 2, "\"d2\""),
         createStubEventWithStreamIdAndData("sid2", 1, "\"d3\""),
