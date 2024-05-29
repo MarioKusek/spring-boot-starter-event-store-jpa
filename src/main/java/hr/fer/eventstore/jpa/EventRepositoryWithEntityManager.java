@@ -7,10 +7,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import jakarta.persistence.EntityManager;
 
-public class EventRepositoryProxy implements EventRepository {
+public class EventRepositoryWithEntityManager implements EventRepository {
   private EntityManager entityManager;
 
-  public EventRepositoryProxy(EntityManager em) {
+  public EventRepositoryWithEntityManager(EntityManager em) {
     this.entityManager = em;
   }
 

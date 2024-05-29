@@ -9,7 +9,7 @@ import jakarta.persistence.EntityManager;
 public class EventStoreConfiguration {
   @Bean
   EventRepository eventRepository(EntityManager em) {
-    return new EventRepositoryProxy(em);
+    return new EventRepositoryWithEntityManager(em);
   }
 
 
