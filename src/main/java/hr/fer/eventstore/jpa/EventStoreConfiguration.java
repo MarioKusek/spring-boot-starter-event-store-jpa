@@ -8,8 +8,8 @@ import jakarta.persistence.EntityManager;
 @Configuration(proxyBeanMethods = false)
 public class EventStoreConfiguration {
   @Bean
-  EventRepository eventRepository(EntityManager em, EventJpaRepository repo) {
-    return new EventRepositoryProxy(em, repo);
+  EventRepository eventRepository(EntityManager em) {
+    return new EventRepositoryProxy(em);
   }
 
 
