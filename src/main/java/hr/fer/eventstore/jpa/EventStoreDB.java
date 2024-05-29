@@ -11,9 +11,9 @@ import jakarta.transaction.Transactional;
 
 public class EventStoreDB<D> extends EventStore<D> {
   private EventMapper<D> eventMapper;
-  private EventJpaRepository repo;
+  private EventRepository repo;
 
-  public EventStoreDB(EventJpaRepository repo, EventMapper<D> mapper) {
+  public EventStoreDB(EventRepository repo, EventMapper<D> mapper) {
     super(mapper);
     this.repo = repo;
     eventMapper = mapper;

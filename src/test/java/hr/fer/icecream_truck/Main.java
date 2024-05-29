@@ -6,16 +6,16 @@ import org.springframework.stereotype.Component;
 
 import hr.fer.eventstore.base.Event;
 import hr.fer.eventstore.base.EventStore;
-import hr.fer.eventstore.jpa.EventJpaRepository;
+import hr.fer.eventstore.jpa.EventRepository;
 import hr.fer.eventstore.jpa.EventStoreDB;
 import hr.fer.icecream_truck.events.TruckEventData;
 import jakarta.annotation.PostConstruct;
 
 @Component
 public class Main {
-  private EventJpaRepository repo;
+  private EventRepository repo;
 
-  public Main(EventJpaRepository repo) {
+  public Main(EventRepository repo) {
     this.repo = repo;
   }
 

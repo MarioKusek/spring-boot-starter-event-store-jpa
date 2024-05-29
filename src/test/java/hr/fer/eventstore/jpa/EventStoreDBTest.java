@@ -17,8 +17,6 @@ import org.springframework.context.annotation.Configuration;
 import hr.fer.eventstore.base.Event;
 import hr.fer.eventstore.base.EventMapper;
 import hr.fer.eventstore.base.EventMapper.ClassTriple;
-import hr.fer.eventstore.jpa.EventJpaRepository;
-import hr.fer.eventstore.jpa.EventStoreDB;
 
 @DataJpaTest(showSql = true, properties = {
     "logging.level.org.springframework.test.context.transaction=TRACE"
@@ -26,7 +24,7 @@ import hr.fer.eventstore.jpa.EventStoreDB;
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class EventStoreDBTest extends TestContainersDbFixture {
   @Autowired
-  EventJpaRepository repo;
+  EventRepository repo;
 
   EventStoreDB<String> store;
 
