@@ -91,29 +91,4 @@ class EventStoreDBTest extends TestContainersDbFixture {
       .extracting("eventData")
       .containsExactly("e2");
   }
-
-  @Test
-  void evolveCommand() throws Exception {
-    store.append(createEvent("e1"));
-
-    store.evolve(events -> List.of("produced1", "produced2")
-        .stream().map(this::createEvent).toList());
-
-    assertThat(store.getAllEvents())
-      .extracting("eventData")
-      .containsExactly("e1", "produced1", "produced2");
-  }
-
-  @Test
-  void evolveCommandOverStream() throws Exception {
-    store.append(StreamId.of("user-pperic"), "e1");
-    store.append(StreamId.of("user-mkusek"), "e2");
-
-    store.evolve(StreamId.of("user-mkusek"), events -> List.of("produced1", "produced2")
-        .stream().map(t -> createEvent(t + "-" + events.size())).toList());
-
-    assertThat(store.getAllEvents(StreamId.of("user-mkusek")))
-      .extracting("eventData")
-      .containsExactly("e2", "produced1-1", "produced2-1");
-  }
 }

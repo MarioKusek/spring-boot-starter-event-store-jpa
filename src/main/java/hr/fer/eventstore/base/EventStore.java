@@ -33,18 +33,4 @@ public abstract class EventStore<D> {
 
   public abstract List<Event<D>> getAllEvents();
   public abstract List<Event<D>> getAllEvents(StreamId streamId);
-
-  // TODO remove
-  public void evolve(EventProducer<D> eventProducer) {
-    List<Event<D>> allEvents = getAllEvents();
-    List<Event<D>> produced = eventProducer.produce(allEvents);
-    appendAll(produced);
-  }
-
-  // TODO remove
-  public void evolve(StreamId streamId, EventProducer<D> eventProducer) {
-    List<Event<D>> allStreamEvents = getAllEvents(streamId);
-    List<Event<D>> produced = eventProducer.produce(allStreamEvents);
-    appendAll(produced);
-  }
 }

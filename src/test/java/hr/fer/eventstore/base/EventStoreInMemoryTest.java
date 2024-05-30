@@ -2,8 +2,6 @@ package hr.fer.eventstore.base;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.List;
-
 import org.junit.jupiter.api.Test;
 
 class EventStoreInMemoryTest {
@@ -32,17 +30,6 @@ class EventStoreInMemoryTest {
     assertThat(store.getAllEvents())
       .extracting("eventData")
       .containsExactly("e1", "e2", "e3");
-  }
-
-  @Test
-  void evolveCommand() throws Exception {
-    store.append(createEvent("e1"));
-
-    store.evolve(events -> List.of("produced1", "produced2").stream().map(this::createEvent).toList());
-
-    assertThat(store.getAllEvents())
-      .extracting("eventData")
-      .containsExactly("e1", "produced1", "produced2");
   }
 
   private Event<String> createEvent(String string) {

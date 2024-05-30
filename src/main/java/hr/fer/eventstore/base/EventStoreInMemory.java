@@ -29,10 +29,4 @@ public class EventStoreInMemory<E> extends EventStore<E> {
       .filter(e -> e.streamId().equals(streamId))
       .collect(Collectors.toUnmodifiableList());
   }
-
-  @Override
-  public void evolve(EventProducer<E> eventProducer) {
-    appendAll(eventProducer.produce(getAllEvents()));
-  }
-
 }
