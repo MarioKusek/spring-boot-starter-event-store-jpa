@@ -17,6 +17,7 @@ import org.springframework.context.annotation.Configuration;
 import hr.fer.eventstore.base.Event;
 import hr.fer.eventstore.base.EventMapper;
 import hr.fer.eventstore.base.EventMapper.ClassTriple;
+import hr.fer.eventstore.base.StreamId;
 
 @DataJpaTest(showSql = true, properties = {
     "logging.level.org.springframework.test.context.transaction=TRACE"
@@ -51,7 +52,7 @@ class EventStoreDBTest extends TestContainersDbFixture {
   @Test
   void appendOneEvent() throws Exception {
     String data = "e1";
-    store.append("user-mkusek", data);
+    store.append(new PlainStreamId("user-mkusek"), data);
 
     List<Event<String>> allEvents = store.getAllEvents();
     assertThat(allEvents).hasSize(1);
@@ -79,9 +80,9 @@ class EventStoreDBTest extends TestContainersDbFixture {
 
   @Test
   void appendMoreEventsInDifferentStreams() throws Exception {
-    store.append("user-mkusek", "e1");
-    store.append("user-pperic", "e2");
-    store.append("user-mkusek", "e3");
+    store.append(new PlainStreamId("user-mkusek"), "e1");
+    store.append(new PlainStreamId("user-pperic"), "e2");
+    store.append(new PlainStreamId("user-mkusek"), "e3");
 
     assertThat(store.getAllEvents("user-mkusek"))
       .extracting("eventData")
@@ -105,8 +106,8 @@ class EventStoreDBTest extends TestContainersDbFixture {
 
   @Test
   void evolveCommandOverStream() throws Exception {
-    store.append("user-pperic", "e1");
-    store.append("user-mkusek", "e2");
+    store.append(new PlainStreamId("user-pperic"), "e1");
+    store.append(new PlainStreamId("user-mkusek"), "e2");
 
     store.evolve("user-mkusek", events -> List.of("produced1", "produced2")
         .stream().map(t -> createEvent(t + "-" + events.size())).toList());
@@ -114,5 +115,12 @@ class EventStoreDBTest extends TestContainersDbFixture {
     assertThat(store.getAllEvents("user-mkusek"))
       .extracting("eventData")
       .containsExactly("e2", "produced1-1", "produced2-1");
+  }
+
+  private static record PlainStreamId(String id) implements StreamId {
+    @Override
+    public String streamId() {
+      return id;
+    }
   }
 }
