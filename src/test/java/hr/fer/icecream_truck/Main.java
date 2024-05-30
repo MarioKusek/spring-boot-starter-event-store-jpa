@@ -1,14 +1,16 @@
 package hr.fer.icecream_truck;
 
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.stereotype.Component;
 
 import hr.fer.eventstore.base.Event;
-import hr.fer.eventstore.base.EventStore;
 import hr.fer.eventstore.base.StreamId;
 import hr.fer.eventstore.jpa.EventRepository;
-import hr.fer.eventstore.jpa.EventStoreDB;
+import hr.fer.icecream_truck.commands.CreateTruck;
+import hr.fer.icecream_truck.commands.RestockFlavour;
+import hr.fer.icecream_truck.commands.SellFlavour;
 import hr.fer.icecream_truck.events.TruckEventData;
 import jakarta.annotation.PostConstruct;
 
@@ -29,67 +31,60 @@ public class Main {
   private void evolveExample() {
     System.out.println("==== evolve example");
     TruckService service = new TruckService(repo);
-    TruckEventFactory factory = new TruckEventFactory();
-    EventStore<TruckEventData> store = new EventStoreDB<>(repo, factory.getMapper());
     Map<String, String> notImportantMetaData = Map.of();
 
     // creating truck
-    Event<TruckEventData> truckCreated = factory.createTruck(notImportantMetaData);
-    StreamId streamId = truckCreated.streamId();
-    store.append(truckCreated);
-    System.out.println("Truck created with streamId: " + streamId);
+    StreamId truckId = service.createTruck(new CreateTruck(notImportantMetaData));
+    System.out.println("Truck created with streamId: " + truckId);
 
-    store.append(factory.flavourRestocked(streamId, new FlavourName("vanilija"), new Amount(1), notImportantMetaData));
+    service.handle(new RestockFlavour(truckId, new FlavourName("vanilija"), new Amount(1), notImportantMetaData));
     System.out.println("Restocked vanilija: 1\n");
 
-    printStateAndEvents(streamId, store);
+    printStateAndEvents(service.getAllEvents(truckId));
 
-    store.evolve(new SoldCommand(new FlavourName("vanilija"), factory, notImportantMetaData));
+    service.handle(new SellFlavour(truckId, new FlavourName("vanilija"), notImportantMetaData));
     System.out.println("Sold vanailija: 1\n");
 
-    printStateAndEvents(streamId, store);
+    printStateAndEvents(service.getAllEvents(truckId));
   }
 
-  private void printStateAndEvents(StreamId streamId, EventStore<TruckEventData> store) {
-    System.out.println("Stock state: " + new StockStateView().fold(store.getAllEvents(streamId)));
+  private void printStateAndEvents(List<Event<TruckEventData>> events) {
+    System.out.println("Stock state: " + new StockStateView().fold(events));
     System.out.println("Events: ");
-    store.getAllEvents(streamId).forEach(e -> System.out.println("\t" + e));
+    events.forEach(e -> System.out.println("\t" + e));
   }
 
   private void basicExamples() {
     System.out.println("==== basic example");
 
-    TruckEventFactory factory = new TruckEventFactory();
-    EventStore<TruckEventData> store = new EventStoreDB<>(repo, factory.getMapper());
+    TruckService service = new TruckService(repo);
     Map<String, String> notImportantMetaData = Map.of();
 
 
-    Event<TruckEventData> truckCreated = factory.createTruck(notImportantMetaData);
-    StreamId streamId = truckCreated.streamId();
-    store.append(truckCreated);
-    System.out.println("Truck created with streamId: " + streamId);
 
+    StreamId truckId = service.createTruck(new CreateTruck(notImportantMetaData));
+    System.out.println("Truck created with truckId: " + truckId);
 
-    store.append(factory.flavourRestocked(streamId, new FlavourName("vanilija"), new Amount(1), notImportantMetaData));
+    service.handle(new RestockFlavour(truckId, new FlavourName("vanilija"), new Amount(1), notImportantMetaData));
     System.out.println("Restocked vanilija: 1\n");
 
-    store.append(factory.flavourSold(streamId, new FlavourName("vanilija"), notImportantMetaData));
+    service.handle(new SellFlavour(truckId, new FlavourName("vanilija"), notImportantMetaData));
     System.out.println("Sold vanailija: 1\n");
 
 
-    store.append(factory.flavourSold(streamId, new FlavourName("vanilija"), notImportantMetaData));
+    service.handle(new SellFlavour(truckId, new FlavourName("vanilija"), notImportantMetaData));
     System.out.println("Sold vanailija: 1\n");
 
-    store.append(factory.flavourSold(streamId, new FlavourName("jagoda"), notImportantMetaData));
+    service.handle(new SellFlavour(truckId, new FlavourName("jagoda"), notImportantMetaData));
     System.out.println("Sold jagoda: 1\n");
 
-    System.out.println("Projection for solding vanilija: " + new SoldFlavourReport(new FlavourName("vanilija")).fold(store.getAllEvents(streamId)));
-    System.out.println("Projection for all solds:\n" + new SoldFlavoursReport().fold(store.getAllEvents(streamId)));
+    System.out.println("Projection for solding vanilija: " +  service.getReport(truckId, new SoldFlavourReport(new FlavourName("vanilija"))));
+    System.out.println("Projection for all solds:\n" + service.getReport(truckId, new SoldFlavoursReport()));
 
-    System.out.println("Stock state;\n" + new StockStateView().fold(store.getAllEvents(streamId)));
+    System.out.println("Stock state;\n" + service.getReport(truckId, new StockStateView()));
 
     System.out.println("Store events;");
-    store.getAllEvents(streamId).forEach(e -> System.out.println("\t" + e));
+    printStateAndEvents(service.getAllEvents(truckId));
   }
 
 }
