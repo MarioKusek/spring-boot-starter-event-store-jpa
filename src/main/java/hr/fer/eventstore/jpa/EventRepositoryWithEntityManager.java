@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import org.springframework.transaction.annotation.Transactional;
 
+import hr.fer.eventstore.base.StreamId;
 import jakarta.persistence.EntityManager;
 
 public class EventRepositoryWithEntityManager implements EventRepository {
@@ -30,7 +31,7 @@ public class EventRepositoryWithEntityManager implements EventRepository {
 
   @Transactional(readOnly = true)
   @Override
-  public List<EventJpaEntity> findAllByStreamId(String streamId) {
+  public List<EventJpaEntity> findAllByStreamId(StreamId streamId) {
     return entityManager.createQuery("""
         select e
         from EventJpaEntity e
@@ -39,7 +40,7 @@ public class EventRepositoryWithEntityManager implements EventRepository {
         order by
             e.id asc
         """)
-      .setParameter(1, streamId)
+      .setParameter(1, streamId.toValue())
       .getResultList();
   }
 

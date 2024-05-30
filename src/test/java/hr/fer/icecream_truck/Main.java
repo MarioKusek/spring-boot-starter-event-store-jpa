@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 
 import hr.fer.eventstore.base.Event;
 import hr.fer.eventstore.base.EventStore;
+import hr.fer.eventstore.base.StreamId;
 import hr.fer.eventstore.jpa.EventRepository;
 import hr.fer.eventstore.jpa.EventStoreDB;
 import hr.fer.icecream_truck.events.TruckEventData;
@@ -27,13 +28,14 @@ public class Main {
 
   private void evolveExample() {
     System.out.println("==== evolve example");
+    TruckService service = new TruckService(repo);
     TruckEventFactory factory = new TruckEventFactory();
     EventStore<TruckEventData> store = new EventStoreDB<>(repo, factory.getMapper());
     Map<String, String> notImportantMetaData = Map.of();
 
     // creating truck
     Event<TruckEventData> truckCreated = factory.createTruck(notImportantMetaData);
-    String streamId = truckCreated.streamId();
+    StreamId streamId = truckCreated.streamId();
     store.append(truckCreated);
     System.out.println("Truck created with streamId: " + streamId);
 
@@ -48,7 +50,7 @@ public class Main {
     printStateAndEvents(streamId, store);
   }
 
-  private void printStateAndEvents(String streamId, EventStore<TruckEventData> store) {
+  private void printStateAndEvents(StreamId streamId, EventStore<TruckEventData> store) {
     System.out.println("Stock state: " + new StockStateView().fold(store.getAllEvents(streamId)));
     System.out.println("Events: ");
     store.getAllEvents(streamId).forEach(e -> System.out.println("\t" + e));
@@ -63,7 +65,7 @@ public class Main {
 
 
     Event<TruckEventData> truckCreated = factory.createTruck(notImportantMetaData);
-    String streamId = truckCreated.streamId();
+    StreamId streamId = truckCreated.streamId();
     store.append(truckCreated);
     System.out.println("Truck created with streamId: " + streamId);
 

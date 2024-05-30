@@ -6,6 +6,7 @@ import hr.fer.eventstore.base.Event;
 import hr.fer.eventstore.base.EventMapper;
 import hr.fer.eventstore.base.EventMapper.TypeVersion;
 import hr.fer.eventstore.base.EventStore;
+import hr.fer.eventstore.base.StreamId;
 import io.hypersistence.tsid.TSID.Factory;
 import jakarta.transaction.Transactional;
 
@@ -40,7 +41,7 @@ public class EventStoreDB<D> extends EventStore<D> {
   }
 
   @Override
-  public List<Event<D>> getAllEvents(String streamId) {
+  public List<Event<D>> getAllEvents(StreamId streamId) {
     return repo.findAllByStreamId(streamId).stream()
       .map(EventStoreDB.this::toEvent)
       .toList();
@@ -51,7 +52,7 @@ public class EventStoreDB<D> extends EventStore<D> {
         new TypeVersion(eventEntity.getEventType(), eventEntity.getEventTypeVersion()));
 
     return new Event<>(
-        eventEntity.getStreamId(),
+        StreamId.of(eventEntity.getStreamId()),
         eventEntity.getEventType(),
         eventEntity.getEventTypeVersion(),
         data,
@@ -67,7 +68,7 @@ public class EventStoreDB<D> extends EventStore<D> {
   private EventJpaEntity createEventEntity(Event<D> event, int version) {
     EventJpaEntity eventEntity = new EventJpaEntity(
         Factory.getTsid().toLong(),
-        event.streamId(),
+        event.streamId().toValue(),
         version,
         event.eventType(),
         event.eventTypeVersion(),
@@ -76,8 +77,8 @@ public class EventStoreDB<D> extends EventStore<D> {
     return eventEntity;
   }
 
-  private int calculateNextVersion(String streamId) {
-    return (int) repo.countByStreamId(streamId);
+  private int calculateNextVersion(StreamId id) {
+    return (int) repo.countByStreamId(id.toValue());
   }
 
 }

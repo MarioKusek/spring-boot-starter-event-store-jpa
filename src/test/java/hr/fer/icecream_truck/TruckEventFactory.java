@@ -6,13 +6,13 @@ import java.util.Map;
 import hr.fer.eventstore.base.Event;
 import hr.fer.eventstore.base.EventMapper;
 import hr.fer.eventstore.base.EventMapper.TypeVersion;
+import hr.fer.eventstore.base.StreamId;
 import hr.fer.icecream_truck.events.FlavourRestocked;
 import hr.fer.icecream_truck.events.FlavourSold;
 import hr.fer.icecream_truck.events.FlavourWasNotInStock;
 import hr.fer.icecream_truck.events.FlavourWentOutOfStock;
 import hr.fer.icecream_truck.events.TruckCreatedEvent;
 import hr.fer.icecream_truck.events.TruckEventData;
-import io.hypersistence.tsid.TSID;
 
 public class TruckEventFactory {
   private EventMapper<TruckEventData> mapper;
@@ -31,35 +31,35 @@ public class TruckEventFactory {
     return mapper;
   }
 
-  public Event<TruckEventData> flavourWasNotInStock(String streamId, FlavourName flavour, Map<String, String> metaData) {
+  public Event<TruckEventData> flavourWasNotInStock(StreamId truckId, FlavourName flavour, Map<String, String> metaData) {
     FlavourWasNotInStock eventData = new FlavourWasNotInStock(flavour);
     TypeVersion et = mapper.getEventTypeVersion(FlavourWasNotInStock.class);
-    return new Event<>(streamId, et.type(), et.version(), eventData, metaData);
+    return new Event<>(truckId, et.type(), et.version(), eventData, metaData);
   }
 
-  public Event<TruckEventData> flavourSold(String streamId, FlavourName flavour, Map<String, String> metaData) {
+  public Event<TruckEventData> flavourSold(StreamId truckId, FlavourName flavour, Map<String, String> metaData) {
     FlavourSold eventData = new FlavourSold(flavour);
     TypeVersion et = mapper.getEventTypeVersion(FlavourSold.class);
-    return new Event<>(streamId, et.type(), et.version(), eventData, metaData);
+    return new Event<>(truckId, et.type(), et.version(), eventData, metaData);
   }
 
-  public Event<TruckEventData> flavourWentOutOfStock(String streamId, FlavourName flavour, Map<String, String> metaData) {
+  public Event<TruckEventData> flavourWentOutOfStock(StreamId truckId, FlavourName flavour, Map<String, String> metaData) {
     FlavourWentOutOfStock eventData = new FlavourWentOutOfStock(flavour);
     TypeVersion et = mapper.getEventTypeVersion(FlavourWentOutOfStock.class);
-    return new Event<>(streamId, et.type(), et.version(), eventData, metaData);
+    return new Event<>(truckId, et.type(), et.version(), eventData, metaData);
   }
 
   public Event<TruckEventData> createTruck(Map<String, String> metaData) {
-    String streamId = "truck-" + TSID.fast().toString();
-    TruckCreatedEvent eventData = new TruckCreatedEvent(streamId);
+    StreamId truckId = StreamId.ofPrefix("truck");
+    TruckCreatedEvent eventData = new TruckCreatedEvent(truckId.toValue());
     TypeVersion et = mapper.getEventTypeVersion(TruckCreatedEvent.class);
-    return new Event<>(streamId, et.type(), et.version(), eventData, metaData);
+    return new Event<>(truckId, et.type(), et.version(), eventData, metaData);
   }
 
-  public Event<TruckEventData> flavourRestocked(String streamId, FlavourName flavourName, Amount amount, Map<String, String> metaData) {
+  public Event<TruckEventData> flavourRestocked(StreamId truckId, FlavourName flavourName, Amount amount, Map<String, String> metaData) {
     FlavourRestocked eventData = new FlavourRestocked(flavourName, amount);
     TypeVersion et = mapper.getEventTypeVersion(FlavourRestocked.class);
-    return new Event<>(streamId, et.type(), et.version(), eventData, metaData);
+    return new Event<>(truckId, et.type(), et.version(), eventData, metaData);
   }
 
 }

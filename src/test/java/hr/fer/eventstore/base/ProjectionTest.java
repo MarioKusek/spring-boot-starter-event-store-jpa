@@ -24,7 +24,7 @@ class ProjectionTest {
       }
     };
 
-    List<Event<String>> events = Event.createList("projection", "e", 1, List.of("e1", "e2", "e3"), Map.of());
+    List<Event<String>> events = Event.createList(StreamId.of("projection"), "e", 1, List.of("e1", "e2", "e3"), Map.of());
     assertThat(p.fold(events)).isEqualTo("|e1|e2|e3");
   }
 
@@ -35,7 +35,7 @@ class ProjectionTest {
         () -> "",
         (String state, Event<String> event) -> state + "|" + event.eventData());
 
-    assertThat(p.fold(Event.createList("perojection", "e", 1, List.of("e1", "e2", "e3"), Map.of()))).isEqualTo("|e1|e2|e3");
+    assertThat(p.fold(Event.createList(StreamId.of("perojection"), "e", 1, List.of("e1", "e2", "e3"), Map.of()))).isEqualTo("|e1|e2|e3");
   }
 
 }

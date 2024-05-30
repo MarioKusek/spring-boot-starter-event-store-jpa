@@ -14,6 +14,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
+import hr.fer.eventstore.base.StreamId;
 import io.hypersistence.tsid.TSID.Factory;
 
 @DataJpaTest(showSql = true)
@@ -80,12 +81,12 @@ class EventRepositoryTest extends TestContainersDbFixture {
         ));
 
 
-    assertThat(repo.findAllByStreamId("sid1"))
+    assertThat(repo.findAllByStreamId(StreamId.of("sid1")))
       .hasSize(3)
       .extracting("data")
       .containsExactly("\"d1\"", "\"d2\"", "\"d4\"");
 
-    assertThat(repo.findAllByStreamId("sid2"))
+    assertThat(repo.findAllByStreamId(StreamId.of("sid2")))
       .hasSize(2)
       .extracting("data")
       .containsExactly("\"d3\"", "\"d5\"");

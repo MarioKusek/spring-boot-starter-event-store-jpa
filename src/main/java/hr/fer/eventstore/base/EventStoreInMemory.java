@@ -24,7 +24,7 @@ public class EventStoreInMemory<E> extends EventStore<E> {
   }
 
   @Override
-  public List<Event<E>> getAllEvents(String streamId) {
+  public List<Event<E>> getAllEvents(StreamId streamId) {
     return events.stream()
       .filter(e -> e.streamId().equals(streamId))
       .collect(Collectors.toUnmodifiableList());

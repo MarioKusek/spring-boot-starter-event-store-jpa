@@ -18,7 +18,7 @@ public abstract class EventStore<D> {
     @SuppressWarnings("unchecked")
     Class<? extends D> eventClass = (Class<? extends D>) eventData.getClass();
     TypeVersion vt = eventMapper.getEventTypeVersion(eventClass);
-    append(new Event<>(id.streamId(), vt.type(), vt.version(), eventData, metaData));
+    append(new Event<>(id, vt.type(), vt.version(), eventData, metaData));
   }
 
   public void appendAll(List<Event<D>> newEvents) {
@@ -32,7 +32,7 @@ public abstract class EventStore<D> {
   }
 
   public abstract List<Event<D>> getAllEvents();
-  public abstract List<Event<D>> getAllEvents(String streamId);
+  public abstract List<Event<D>> getAllEvents(StreamId streamId);
 
   // TODO remove
   public void evolve(EventProducer<D> eventProducer) {
@@ -42,7 +42,7 @@ public abstract class EventStore<D> {
   }
 
   // TODO remove
-  public void evolve(String streamId, EventProducer<D> eventProducer) {
+  public void evolve(StreamId streamId, EventProducer<D> eventProducer) {
     List<Event<D>> allStreamEvents = getAllEvents(streamId);
     List<Event<D>> produced = eventProducer.produce(allStreamEvents);
     appendAll(produced);

@@ -52,19 +52,19 @@ class EventStoreDBTest extends TestContainersDbFixture {
   @Test
   void appendOneEvent() throws Exception {
     String data = "e1";
-    store.append(new PlainStreamId("user-mkusek"), data);
+    store.append(StreamId.of("user-mkusek"), data);
 
     List<Event<String>> allEvents = store.getAllEvents();
     assertThat(allEvents).hasSize(1);
     Event<String> event = allEvents.getFirst();
-    assertThat(event.streamId()).isEqualTo("user-mkusek");
+    assertThat(event.streamId()).isEqualTo(StreamId.of("user-mkusek"));
     assertThat(event.eventType()).isEqualTo("string");
     assertThat(event.eventTypeVersion()).isEqualTo(1);
     assertThat(event.eventData()).isEqualTo(data);
   }
 
   private Event<String> createEvent(String data) {
-    return new Event<>("user-mkusek", "string", 1, data, Map.of());
+    return new Event<>(StreamId.of("user-mkusek"), "string", 1, data, Map.of());
   }
 
   @Test
@@ -80,14 +80,14 @@ class EventStoreDBTest extends TestContainersDbFixture {
 
   @Test
   void appendMoreEventsInDifferentStreams() throws Exception {
-    store.append(new PlainStreamId("user-mkusek"), "e1");
-    store.append(new PlainStreamId("user-pperic"), "e2");
-    store.append(new PlainStreamId("user-mkusek"), "e3");
+    store.append(StreamId.of("user-mkusek"), "e1");
+    store.append(StreamId.of("user-pperic"), "e2");
+    store.append(StreamId.of("user-mkusek"), "e3");
 
-    assertThat(store.getAllEvents("user-mkusek"))
+    assertThat(store.getAllEvents(StreamId.of("user-mkusek")))
       .extracting("eventData")
       .containsExactly("e1", "e3");
-    assertThat(store.getAllEvents("user-pperic"))
+    assertThat(store.getAllEvents(StreamId.of("user-pperic")))
       .extracting("eventData")
       .containsExactly("e2");
   }
@@ -106,21 +106,14 @@ class EventStoreDBTest extends TestContainersDbFixture {
 
   @Test
   void evolveCommandOverStream() throws Exception {
-    store.append(new PlainStreamId("user-pperic"), "e1");
-    store.append(new PlainStreamId("user-mkusek"), "e2");
+    store.append(StreamId.of("user-pperic"), "e1");
+    store.append(StreamId.of("user-mkusek"), "e2");
 
-    store.evolve("user-mkusek", events -> List.of("produced1", "produced2")
+    store.evolve(StreamId.of("user-mkusek"), events -> List.of("produced1", "produced2")
         .stream().map(t -> createEvent(t + "-" + events.size())).toList());
 
-    assertThat(store.getAllEvents("user-mkusek"))
+    assertThat(store.getAllEvents(StreamId.of("user-mkusek")))
       .extracting("eventData")
       .containsExactly("e2", "produced1-1", "produced2-1");
-  }
-
-  private static record PlainStreamId(String id) implements StreamId {
-    @Override
-    public String streamId() {
-      return id;
-    }
   }
 }
