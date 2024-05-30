@@ -15,7 +15,7 @@ ext {
 java {
 	sourceCompatibility = '21'
     //withJavadocJar()
-    //withSourcesJar()
+    withSourcesJar()
 }
 
 repositories {
