@@ -37,7 +37,7 @@ public class Main {
     store.append(truckCreated);
     System.out.println("Truck created with streamId: " + streamId);
 
-    store.append(factory.flavourRestocked(streamId, new FlavourName("vanilija"), 1, notImportantMetaData));
+    store.append(factory.flavourRestocked(streamId, new FlavourName("vanilija"), new Amount(1), notImportantMetaData));
     System.out.println("Restocked vanilija: 1\n");
 
     printStateAndEvents(streamId, store);
@@ -68,7 +68,7 @@ public class Main {
     System.out.println("Truck created with streamId: " + streamId);
 
 
-    store.append(factory.flavourRestocked(streamId, new FlavourName("vanilija"), 1, notImportantMetaData));
+    store.append(factory.flavourRestocked(streamId, new FlavourName("vanilija"), new Amount(1), notImportantMetaData));
     System.out.println("Restocked vanilija: 1\n");
 
     store.append(factory.flavourSold(streamId, new FlavourName("vanilija"), notImportantMetaData));

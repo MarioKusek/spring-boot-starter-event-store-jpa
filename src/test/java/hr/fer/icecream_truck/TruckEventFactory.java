@@ -56,7 +56,7 @@ public class TruckEventFactory {
     return new Event<>(streamId, et.type(), et.version(), eventData, metaData);
   }
 
-  public Event<TruckEventData> flavourRestocked(String streamId, FlavourName flavourName, int amount, Map<String, String> metaData) {
+  public Event<TruckEventData> flavourRestocked(String streamId, FlavourName flavourName, Amount amount, Map<String, String> metaData) {
     FlavourRestocked eventData = new FlavourRestocked(flavourName, amount);
     TypeVersion et = mapper.getEventTypeVersion(FlavourRestocked.class);
     return new Event<>(streamId, et.type(), et.version(), eventData, metaData);
