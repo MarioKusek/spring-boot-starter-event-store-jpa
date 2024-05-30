@@ -1,5 +1,7 @@
 package hr.fer.icecream_truck.events;
 
-public record FlavourRestocked(String flavour, int amount) implements StockChangeEvent {
+import hr.fer.icecream_truck.FlavourName;
+
+public record FlavourRestocked(FlavourName flavour, int amount) implements StockChangeEvent {
 
 }

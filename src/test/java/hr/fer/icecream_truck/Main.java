@@ -37,12 +37,12 @@ public class Main {
     store.append(truckCreated);
     System.out.println("Truck created with streamId: " + streamId);
 
-    store.append(factory.flavourRestocked(streamId, "vanilija", 1, notImportantMetaData));
+    store.append(factory.flavourRestocked(streamId, new FlavourName("vanilija"), 1, notImportantMetaData));
     System.out.println("Restocked vanilija: 1\n");
 
     printStateAndEvents(streamId, store);
 
-    store.evolve(new SoldCommand("vanilija", factory, notImportantMetaData));
+    store.evolve(new SoldCommand(new FlavourName("vanilija"), factory, notImportantMetaData));
     System.out.println("Sold vanailija: 1\n");
 
     printStateAndEvents(streamId, store);
@@ -68,20 +68,20 @@ public class Main {
     System.out.println("Truck created with streamId: " + streamId);
 
 
-    store.append(factory.flavourRestocked(streamId, "vanilija", 1, notImportantMetaData));
+    store.append(factory.flavourRestocked(streamId, new FlavourName("vanilija"), 1, notImportantMetaData));
     System.out.println("Restocked vanilija: 1\n");
 
-    store.append(factory.flavourSold(streamId, "vanilija", notImportantMetaData));
+    store.append(factory.flavourSold(streamId, new FlavourName("vanilija"), notImportantMetaData));
     System.out.println("Sold vanailija: 1\n");
 
 
-    store.append(factory.flavourSold(streamId, "vanilija", notImportantMetaData));
+    store.append(factory.flavourSold(streamId, new FlavourName("vanilija"), notImportantMetaData));
     System.out.println("Sold vanailija: 1\n");
 
-    store.append(factory.flavourSold(streamId, "jagoda", notImportantMetaData));
+    store.append(factory.flavourSold(streamId, new FlavourName("jagoda"), notImportantMetaData));
     System.out.println("Sold jagoda: 1\n");
 
-    System.out.println("Projection for solding vanilija: " + new SoldFlavourReport("vanilija").fold(store.getAllEvents(streamId)));
+    System.out.println("Projection for solding vanilija: " + new SoldFlavourReport(new FlavourName("vanilija")).fold(store.getAllEvents(streamId)));
     System.out.println("Projection for all solds:\n" + new SoldFlavoursReport().fold(store.getAllEvents(streamId)));
 
     System.out.println("Stock state;\n" + new StockStateView().fold(store.getAllEvents(streamId)));

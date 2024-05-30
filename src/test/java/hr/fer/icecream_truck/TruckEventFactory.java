@@ -31,19 +31,19 @@ public class TruckEventFactory {
     return mapper;
   }
 
-  public Event<TruckEventData> flavourWasNotInStock(String streamId, String flavour, Map<String, String> metaData) {
+  public Event<TruckEventData> flavourWasNotInStock(String streamId, FlavourName flavour, Map<String, String> metaData) {
     FlavourWasNotInStock eventData = new FlavourWasNotInStock(flavour);
     TypeVersion et = mapper.getEventTypeVersion(FlavourWasNotInStock.class);
     return new Event<>(streamId, et.type(), et.version(), eventData, metaData);
   }
 
-  public Event<TruckEventData> flavourSold(String streamId, String flavour, Map<String, String> metaData) {
+  public Event<TruckEventData> flavourSold(String streamId, FlavourName flavour, Map<String, String> metaData) {
     FlavourSold eventData = new FlavourSold(flavour);
     TypeVersion et = mapper.getEventTypeVersion(FlavourSold.class);
     return new Event<>(streamId, et.type(), et.version(), eventData, metaData);
   }
 
-  public Event<TruckEventData> flavourWentOutOfStock(String streamId, String flavour, Map<String, String> metaData) {
+  public Event<TruckEventData> flavourWentOutOfStock(String streamId, FlavourName flavour, Map<String, String> metaData) {
     FlavourWentOutOfStock eventData = new FlavourWentOutOfStock(flavour);
     TypeVersion et = mapper.getEventTypeVersion(FlavourWentOutOfStock.class);
     return new Event<>(streamId, et.type(), et.version(), eventData, metaData);
@@ -56,8 +56,8 @@ public class TruckEventFactory {
     return new Event<>(streamId, et.type(), et.version(), eventData, metaData);
   }
 
-  public Event<TruckEventData> flavourRestocked(String streamId, String flavour, int amount, Map<String, String> metaData) {
-    FlavourRestocked eventData = new FlavourRestocked(flavour, amount);
+  public Event<TruckEventData> flavourRestocked(String streamId, FlavourName flavourName, int amount, Map<String, String> metaData) {
+    FlavourRestocked eventData = new FlavourRestocked(flavourName, amount);
     TypeVersion et = mapper.getEventTypeVersion(FlavourRestocked.class);
     return new Event<>(streamId, et.type(), et.version(), eventData, metaData);
   }

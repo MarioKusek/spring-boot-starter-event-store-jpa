@@ -10,24 +10,24 @@ import hr.fer.icecream_truck.events.FlavourSold;
 import hr.fer.icecream_truck.events.StockChangeEvent;
 import hr.fer.icecream_truck.events.TruckEventData;
 
-public class StockStateView extends Projection<Map<String, Integer>, TruckEventData> {
+public class StockStateView extends Projection<Map<FlavourName, Integer>, TruckEventData> {
 
   @Override
-  public Map<String, Integer> initialState() {
+  public Map<FlavourName, Integer> initialState() {
     return Map.of();
   }
 
   @Override
-  public Map<String, Integer> update(Map<String, Integer> currentState, Event<TruckEventData> event) {
+  public Map<FlavourName, Integer> update(Map<FlavourName, Integer> currentState, Event<TruckEventData> event) {
     var newState = new HashMap<>(currentState);
     TruckEventData data = event.eventData();
     if(data instanceof StockChangeEvent sc)
       switch (sc) {
-          case FlavourRestocked(String flavour, int amount) ->
+          case FlavourRestocked(FlavourName flavour, int amount) ->
             newState.merge(flavour, amount, (oldValue, defaultValue) -> {
               return oldValue + amount;
             });
-          case FlavourSold(String flavour) ->
+          case FlavourSold(FlavourName flavour) ->
             newState.merge(flavour, 1, (oldValue, defaultValue) -> {
               return oldValue - 1;
             });

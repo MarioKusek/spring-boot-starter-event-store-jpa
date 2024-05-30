@@ -7,9 +7,9 @@ import hr.fer.icecream_truck.events.TruckEventData;
 
 public class SoldFlavourReport extends Projection<Integer, TruckEventData> {
 
-  private String flavour;
+  private FlavourName flavour;
 
-  public SoldFlavourReport(String flavour) {
+  public SoldFlavourReport(FlavourName flavour) {
     this.flavour = flavour;
   }
 
@@ -21,7 +21,7 @@ public class SoldFlavourReport extends Projection<Integer, TruckEventData> {
   @Override
   public Integer update(Integer currentState, Event<TruckEventData> event) {
     return switch (event.eventData()) {
-      case FlavourSold(String sold) -> sold.equals(flavour) ? currentState + 1 : currentState;
+      case FlavourSold(FlavourName sold) -> sold.equals(flavour) ? currentState + 1 : currentState;
       default -> currentState;
     };
   }

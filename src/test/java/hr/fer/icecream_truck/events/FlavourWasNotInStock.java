@@ -1,5 +1,7 @@
 package hr.fer.icecream_truck.events;
 
-public record FlavourWasNotInStock(String flavour) implements TruckEventData {
+import hr.fer.icecream_truck.FlavourName;
+
+public record FlavourWasNotInStock(FlavourName flavour) implements TruckEventData {
 
 }

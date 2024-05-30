@@ -8,18 +8,18 @@ import hr.fer.eventstore.base.Projection;
 import hr.fer.icecream_truck.events.FlavourSold;
 import hr.fer.icecream_truck.events.TruckEventData;
 
-public class SoldFlavoursReport extends Projection<Map<String, Integer>, TruckEventData> {
+public class SoldFlavoursReport extends Projection<Map<FlavourName, Integer>, TruckEventData> {
 
   @Override
-  public Map<String, Integer> initialState() {
+  public Map<FlavourName, Integer> initialState() {
     return new HashMap<>();
   }
 
   @Override
-  public Map<String, Integer> update(Map<String, Integer> currentState, Event<TruckEventData> event) {
-    Map<String, Integer> newState = new HashMap<>(currentState);
+  public Map<FlavourName, Integer> update(Map<FlavourName, Integer> currentState, Event<TruckEventData> event) {
+    Map<FlavourName, Integer> newState = new HashMap<>(currentState);
 
-    if(event.eventData() instanceof FlavourSold(String flavour))
+    if(event.eventData() instanceof FlavourSold(FlavourName flavour))
           newState.merge(flavour, 1, (oldValue, defaultValue) -> {
             return oldValue + 1;
           });
