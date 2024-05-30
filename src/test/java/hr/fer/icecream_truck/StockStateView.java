@@ -10,7 +10,7 @@ import hr.fer.icecream_truck.events.FlavourSold;
 import hr.fer.icecream_truck.events.StockChangeEvent;
 import hr.fer.icecream_truck.events.TruckEventData;
 
-public class StockState extends Projection<Map<String, Integer>, TruckEventData> {
+public class StockStateView extends Projection<Map<String, Integer>, TruckEventData> {
 
   @Override
   public Map<String, Integer> initialState() {

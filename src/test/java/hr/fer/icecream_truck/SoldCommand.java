@@ -25,7 +25,7 @@ public class SoldCommand implements EventProducer<TruckEventData> {
     Assert.notEmpty(events, "There sould be at least one event");
     Event<TruckEventData> event = events.getFirst();
 
-    Map<String, Integer> state = new StockState().fold(events);
+    Map<String, Integer> state = new StockStateView().fold(events);
     int inStock = state.getOrDefault(flavour, 0);
     return switch(inStock) {
       case 0 -> List.of(factory.flavourWasNotInStock(event.streamId(), flavour, metaData));

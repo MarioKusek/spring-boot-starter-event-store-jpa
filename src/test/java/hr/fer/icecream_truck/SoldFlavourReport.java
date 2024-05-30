@@ -5,11 +5,11 @@ import hr.fer.eventstore.base.Projection;
 import hr.fer.icecream_truck.events.FlavourSold;
 import hr.fer.icecream_truck.events.TruckEventData;
 
-public class SoldOneFlavour extends Projection<Integer, TruckEventData> {
+public class SoldFlavourReport extends Projection<Integer, TruckEventData> {
 
   private String flavour;
 
-  public SoldOneFlavour(String flavour) {
+  public SoldFlavourReport(String flavour) {
     this.flavour = flavour;
   }
 

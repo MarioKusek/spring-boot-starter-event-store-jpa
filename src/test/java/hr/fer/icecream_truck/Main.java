@@ -49,7 +49,7 @@ public class Main {
   }
 
   private void printStateAndEvents(String streamId, EventStore<TruckEventData> store) {
-    System.out.println("Stock state: " + new StockState().fold(store.getAllEvents(streamId)));
+    System.out.println("Stock state: " + new StockStateView().fold(store.getAllEvents(streamId)));
     System.out.println("Events: ");
     store.getAllEvents(streamId).forEach(e -> System.out.println("\t" + e));
   }
@@ -81,10 +81,10 @@ public class Main {
     store.append(factory.flavourSold(streamId, "jagoda", notImportantMetaData));
     System.out.println("Sold jagoda: 1\n");
 
-    System.out.println("Projection for solding vanilija: " + new SoldOneFlavour("vanilija").fold(store.getAllEvents(streamId)));
+    System.out.println("Projection for solding vanilija: " + new SoldFlavourReport("vanilija").fold(store.getAllEvents(streamId)));
     System.out.println("Projection for all solds:\n" + new SoldFlavoursReport().fold(store.getAllEvents(streamId)));
 
-    System.out.println("Stock state;\n" + new StockState().fold(store.getAllEvents(streamId)));
+    System.out.println("Stock state;\n" + new StockStateView().fold(store.getAllEvents(streamId)));
 
     System.out.println("Store events;");
     store.getAllEvents(streamId).forEach(e -> System.out.println("\t" + e));
