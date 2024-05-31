@@ -52,7 +52,13 @@ public class EventStoreDB<D> extends EventStore<D> {
     return repo.findAllByStreamIdAndFromVersion(streamId, fromVersion).stream()
         .map(EventStoreDB.this::toEvent)
         .toList();
+  }
 
+  @Override
+  public List<Event<D>> getAllEventsStreamIdPrefixIs(String streamIdPrefix) {
+    return repo.getAllEventsStreamIdPrefixIs(streamIdPrefix).stream()
+        .map(EventStoreDB.this::toEvent)
+        .toList();
   }
 
   private Event<D> toEvent(EventJpaEntity eventEntity) {

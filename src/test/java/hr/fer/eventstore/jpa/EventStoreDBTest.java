@@ -105,4 +105,20 @@ class EventStoreDBTest extends TestContainersDbFixture {
       .extracting("eventData", "version")
       .containsExactly(tuple("e2", 2), tuple("e3", 3));
   }
+
+  @Test
+  void getEventsWithStreamIdPrefix() throws Exception {
+    store.append(StreamId.of("user-mkusek"), "e1");
+    store.append(StreamId.of("user-pperic"), "e2");
+    store.append(StreamId.of("user-mkusek"), "e3");
+    store.append(StreamId.of("truck-2456"), "e4");
+
+    assertThat(store.getAllEventsStreamIdPrefixIs("user"))
+      .extracting("eventData")
+      .containsExactlyInAnyOrder("e1", "e2", "e3");
+    assertThat(store.getAllEventsStreamIdPrefixIs("truck"))
+      .extracting("eventData")
+      .containsExactlyInAnyOrder("e4");
+  }
+
 }

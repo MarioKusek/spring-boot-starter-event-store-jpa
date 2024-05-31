@@ -42,6 +42,13 @@ public class EventStoreInMemory<E> extends EventStore<E> {
         .collect(Collectors.toUnmodifiableList());
   }
 
+  @Override
+  public List<Event<E>> getAllEventsStreamIdPrefixIs(String streamIdPrefix) {
+    return events.stream()
+        .filter(e -> e.streamId().prefix().equals(streamIdPrefix))
+        .collect(Collectors.toUnmodifiableList());
+  }
+
   private int calculateNextVersion(StreamId id) {
     return getAllEvents(id).size() + 1;
   }
