@@ -121,4 +121,19 @@ class EventStoreDBTest extends TestContainersDbFixture {
       .containsExactlyInAnyOrder("e4");
   }
 
+  @Test
+  void getEventsWithStreamIdPrefixStartsWith() throws Exception {
+    store.append(StreamId.of("user-mkusek"), "e1");
+    store.append(StreamId.of("user-pperic"), "e2");
+    store.append(StreamId.of("user-mkusek"), "e3");
+    store.append(StreamId.of("truck-2456"), "e4");
+
+    assertThat(store.getAllEventsStreamIdPrefixStartsWith("u"))
+      .extracting("eventData")
+      .containsExactlyInAnyOrder("e1", "e2", "e3");
+    assertThat(store.getAllEventsStreamIdPrefixStartsWith("t"))
+      .extracting("eventData")
+      .containsExactlyInAnyOrder("e4");
+  }
+
 }

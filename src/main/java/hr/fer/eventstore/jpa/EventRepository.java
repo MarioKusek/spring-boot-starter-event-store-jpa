@@ -11,9 +11,9 @@ public interface EventRepository {
   Optional<EventJpaEntity> findById(long id);
   List<EventJpaEntity> findAllByStreamId(StreamId streamId);
   List<EventJpaEntity> findAllByStreamIdAndFromVersion(StreamId streamId, int fromVersion);
-  // dodati 3 query-a:
-  // TODO sve agregate čiji streamID počinje s nekim tekstom
   List<EventJpaEntity> getAllEventsStreamIdPrefixIs(String streamIdPrefix);
+  List<EventJpaEntity> getAllEventsStreamIdPrefixStartsWith(String streamIdPrefixStartsWith);
+
   // TODO za sve agregate i pojedine tipove događaja
 
   long countByStreamId(String streamId);

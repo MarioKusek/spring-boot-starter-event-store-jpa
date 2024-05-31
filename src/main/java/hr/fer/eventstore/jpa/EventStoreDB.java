@@ -61,6 +61,13 @@ public class EventStoreDB<D> extends EventStore<D> {
         .toList();
   }
 
+  @Override
+  public List<Event<D>> getAllEventsStreamIdPrefixStartsWith(String streamIdPrefixStartsWith) {
+    return repo.getAllEventsStreamIdPrefixStartsWith(streamIdPrefixStartsWith).stream()
+        .map(EventStoreDB.this::toEvent)
+        .toList();
+  }
+
   private Event<D> toEvent(EventJpaEntity eventEntity) {
     D data = eventMapper.toEventData(eventEntity.getData(),
         new TypeVersion(eventEntity.getEventType(), eventEntity.getEventTypeVersion()));

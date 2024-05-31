@@ -65,6 +65,21 @@ class EventStoreInMemoryTest {
       .containsExactlyInAnyOrder("e4");
   }
 
+  @Test
+  void getEventsWithStreamIdPrefixStartsWith() throws Exception {
+    store.append(createEvent(StreamId.of("user-mkusek"), "e1"));
+    store.append(createEvent(StreamId.of("user-pperic"), "e2"));
+    store.append(createEvent(StreamId.of("user-mkusek"), "e3"));
+    store.append(createEvent(StreamId.of("truck-2456"), "e4"));
+
+    assertThat(store.getAllEventsStreamIdPrefixStartsWith("u"))
+      .extracting("eventData")
+      .containsExactlyInAnyOrder("e1", "e2", "e3");
+    assertThat(store.getAllEventsStreamIdPrefixStartsWith("t"))
+      .extracting("eventData")
+      .containsExactlyInAnyOrder("e4");
+  }
+
   private Event<String> createEvent(StreamId streamId, String string) {
     return Event.of(streamId, null, 0, string, null);
   }

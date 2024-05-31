@@ -79,6 +79,21 @@ public class EventRepositoryWithEntityManager implements EventRepository {
       .getResultList();
   }
 
+  @Transactional(readOnly = true)
+  @Override
+  public List<EventJpaEntity> getAllEventsStreamIdPrefixStartsWith(String streamIdPrefixStartsWith) {
+    return entityManager.createQuery("""
+        select e
+        from EventJpaEntity e
+        where
+            e.streamId like concat( ?1, '%')
+        order by
+            e.id asc
+        """)
+      .setParameter(1, streamIdPrefixStartsWith)
+      .getResultList();
+  }
+
   @Transactional
   @Override
   public void save(EventJpaEntity eventEntity) {
