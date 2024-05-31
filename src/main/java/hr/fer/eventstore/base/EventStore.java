@@ -18,7 +18,7 @@ public abstract class EventStore<D> {
     @SuppressWarnings("unchecked")
     Class<? extends D> eventClass = (Class<? extends D>) eventData.getClass();
     TypeVersion vt = eventMapper.getEventTypeVersion(eventClass);
-    append(new Event<>(id, vt.type(), vt.version(), eventData, metaData));
+    append(Event.of(id, vt.type(), vt.version(), eventData, metaData));
   }
 
   public void appendAll(List<Event<D>> newEvents) {
@@ -33,4 +33,12 @@ public abstract class EventStore<D> {
 
   public abstract List<Event<D>> getAllEvents();
   public abstract List<Event<D>> getAllEvents(StreamId streamId);
+  // TODO stream id i varzija od koje želimo događaje
+  //public abstract List<Event<D>> getAllEvents(StreamId streamId, int fromVersion);
+  // TODO sve događaje čiji streamID.prefix počinje s nekim tekstom
+  //public abstract List<Event<D>> getAllEventsStreamIdPrefixStartsWith(String streamIdPrefixStartsWith, int fromVersion);
+  //public abstract List<Event<D>> getAllEventsStreamIdPrefixIs(String streamIdPrefix);
+  // TODO za sve događaje i pojedine tipove događaja (klase od eventData)
+  //public abstract List<Event<D>> getAllEventsForEventDataClass(Class<?> ...eventDataClasses);
+
 }

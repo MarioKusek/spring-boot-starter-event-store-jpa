@@ -33,7 +33,7 @@ class EventStoreInMemoryTest {
   }
 
   private Event<String> createEvent(String string) {
-    return new Event<>(null, null, 0, string, null);
+    return Event.of(null, null, 0, string, null);
   }
 
 }

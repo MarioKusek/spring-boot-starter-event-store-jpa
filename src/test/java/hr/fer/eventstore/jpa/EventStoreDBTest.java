@@ -63,15 +63,15 @@ class EventStoreDBTest extends TestContainersDbFixture {
     assertThat(event.eventData()).isEqualTo(data);
   }
 
-  private Event<String> createEvent(String data) {
-    return new Event<>(StreamId.of("user-mkusek"), "string", 1, data, Map.of());
+  private Event<String> createEvent(String data, int version) {
+    return new Event<>(StreamId.of("user-mkusek"), version, "string", 1, data, Map.of());
   }
 
   @Test
   void appendMoreEvents() throws Exception {
-    store.append(createEvent("e1"));
-    store.append(createEvent("e2"));
-    store.append(createEvent("e3"));
+    store.append(createEvent("e1", 1));
+    store.append(createEvent("e2", 2));
+    store.append(createEvent("e3", 3));
 
     assertThat(store.getAllEvents())
       .extracting("eventData")

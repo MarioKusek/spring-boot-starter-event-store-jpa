@@ -34,32 +34,32 @@ public class TruckEventFactory {
   public Event<TruckEventData> flavourWasNotInStock(StreamId truckId, FlavourName flavour, Map<String, String> metaData) {
     FlavourWasNotInStock eventData = new FlavourWasNotInStock(flavour);
     TypeVersion et = mapper.getEventTypeVersion(FlavourWasNotInStock.class);
-    return new Event<>(truckId, et.type(), et.version(), eventData, metaData);
+    return Event.of(truckId, et.type(), et.version(), eventData, metaData);
   }
 
   public Event<TruckEventData> flavourSold(StreamId truckId, FlavourName flavour, Map<String, String> metaData) {
     FlavourSold eventData = new FlavourSold(flavour);
     TypeVersion et = mapper.getEventTypeVersion(FlavourSold.class);
-    return new Event<>(truckId, et.type(), et.version(), eventData, metaData);
+    return Event.of(truckId, et.type(), et.version(), eventData, metaData);
   }
 
   public Event<TruckEventData> flavourWentOutOfStock(StreamId truckId, FlavourName flavour, Map<String, String> metaData) {
     FlavourWentOutOfStock eventData = new FlavourWentOutOfStock(flavour);
     TypeVersion et = mapper.getEventTypeVersion(FlavourWentOutOfStock.class);
-    return new Event<>(truckId, et.type(), et.version(), eventData, metaData);
+    return Event.of(truckId, et.type(), et.version(), eventData, metaData);
   }
 
   public Event<TruckEventData> createTruck(Map<String, String> metaData) {
     StreamId truckId = StreamId.ofPrefix("truck");
     TruckCreatedEvent eventData = new TruckCreatedEvent(truckId.toValue());
     TypeVersion et = mapper.getEventTypeVersion(TruckCreatedEvent.class);
-    return new Event<>(truckId, et.type(), et.version(), eventData, metaData);
+    return Event.of(truckId, et.type(), et.version(), eventData, metaData);
   }
 
   public Event<TruckEventData> flavourRestocked(StreamId truckId, FlavourName flavourName, Amount amount, Map<String, String> metaData) {
     FlavourRestocked eventData = new FlavourRestocked(flavourName, amount);
     TypeVersion et = mapper.getEventTypeVersion(FlavourRestocked.class);
-    return new Event<>(truckId, et.type(), et.version(), eventData, metaData);
+    return Event.of(truckId, et.type(), et.version(), eventData, metaData);
   }
 
 }

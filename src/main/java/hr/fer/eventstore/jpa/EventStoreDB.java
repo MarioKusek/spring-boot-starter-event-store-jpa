@@ -53,6 +53,7 @@ public class EventStoreDB<D> extends EventStore<D> {
 
     return new Event<>(
         StreamId.of(eventEntity.getStreamId()),
+        eventEntity.getVersion(),
         eventEntity.getEventType(),
         eventEntity.getEventTypeVersion(),
         data,
