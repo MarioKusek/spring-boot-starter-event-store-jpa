@@ -58,6 +58,7 @@ class EventStoreDBTest extends TestContainersDbFixture {
     assertThat(allEvents).hasSize(1);
     Event<String> event = allEvents.getFirst();
     assertThat(event.streamId()).isEqualTo(StreamId.of("user-mkusek"));
+    assertThat(event.version()).isEqualTo(1);
     assertThat(event.eventType()).isEqualTo("string");
     assertThat(event.eventTypeVersion()).isEqualTo(1);
     assertThat(event.eventData()).isEqualTo(data);

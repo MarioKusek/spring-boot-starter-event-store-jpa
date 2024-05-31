@@ -79,7 +79,13 @@ public class EventStoreDB<D> extends EventStore<D> {
   }
 
   private int calculateNextVersion(StreamId id) {
-    return (int) repo.countByStreamId(id.toValue());
+    return (int) repo.countByStreamId(id.toValue()) + 1;
+  }
+
+  @Override
+  public List<Event<D>> getAllEventsFromVersion(StreamId streamId, int fromVersion) {
+    // TODO implement
+    throw new UnsupportedOperationException();
   }
 
 }
