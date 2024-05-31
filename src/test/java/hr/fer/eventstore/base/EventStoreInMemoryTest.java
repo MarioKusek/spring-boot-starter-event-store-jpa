@@ -1,6 +1,7 @@
 package hr.fer.eventstore.base;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
 
 import org.junit.jupiter.api.Test;
 
@@ -14,26 +15,31 @@ class EventStoreInMemoryTest {
 
   @Test
   void appendOneEvent() throws Exception {
-    store.append(createEvent("e1"));
+    store.append(createEvent(StreamId.of("notImportant"), "e1"));
 
     assertThat(store.getAllEvents())
-      .extracting("eventData")
-      .containsExactly("e1");
+      .extracting("eventData", "version")
+      .containsExactly(tuple("e1", 1));
   }
 
   @Test
   void appendMoreEvents() throws Exception {
-    store.append(createEvent("e1"));
-    store.append(createEvent("e2"));
-    store.append(createEvent("e3"));
+    StreamId streamId = StreamId.of("someStreamId");
+
+    store.append(createEvent(streamId, "e1"));
+    store.append(createEvent(streamId, "e2"));
+    store.append(createEvent(streamId, "e3"));
 
     assertThat(store.getAllEvents())
-      .extracting("eventData")
-      .containsExactly("e1", "e2", "e3");
+      .extracting("eventData", "version")
+      .containsExactly(
+          tuple("e1", 1),
+          tuple("e2", 2),
+          tuple("e3", 3));
   }
 
-  private Event<String> createEvent(String string) {
-    return Event.of(null, null, 0, string, null);
+  private Event<String> createEvent(StreamId streamId, String string) {
+    return Event.of(streamId, null, 0, string, null);
   }
 
 }

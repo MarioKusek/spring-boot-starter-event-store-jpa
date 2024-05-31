@@ -12,7 +12,14 @@ public abstract class EventStore<D> {
     eventMapper = mapper;
   }
 
-  public abstract void append(Event<D> eventData);
+  /**
+   * Append event to store.
+   *
+   * If event version is -1 then it should be replaced with current version of the streamId
+   *
+   * @param event the event that should be saved
+   */
+  public abstract void append(Event<D> event);
 
   public void append(StreamId id, D eventData, Map<String, String> metaData) {
     @SuppressWarnings("unchecked")
@@ -33,8 +40,13 @@ public abstract class EventStore<D> {
 
   public abstract List<Event<D>> getAllEvents();
   public abstract List<Event<D>> getAllEvents(StreamId streamId);
-  // TODO stream id i varzija od koje želimo događaje
-  //public abstract List<Event<D>> getAllEvents(StreamId streamId, int fromVersion);
+  /**
+   * Returns all events from version.
+   * @param streamId
+   * @param fromVersion
+   * @return
+   */
+  public abstract List<Event<D>> getAllEventsFromVersion(StreamId streamId, int fromVersion);
   // TODO sve događaje čiji streamID.prefix počinje s nekim tekstom
   //public abstract List<Event<D>> getAllEventsStreamIdPrefixStartsWith(String streamIdPrefixStartsWith, int fromVersion);
   //public abstract List<Event<D>> getAllEventsStreamIdPrefixIs(String streamIdPrefix);
