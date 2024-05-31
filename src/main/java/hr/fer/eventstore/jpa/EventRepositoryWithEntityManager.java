@@ -29,6 +29,10 @@ public class EventRepositoryWithEntityManager implements EventRepository {
       .getSingleResult();
   }
 
+  // TODO dodati 3 query-a:
+  // @Query("SELECT u.username FROM User u WHERE u.username LIKE CONCAT('%',:username,'%')") - sve agregate
+  // za sve agregate i pojedine tipove događaja
+  // stream id i varzija od koje želimo događaje
   @Transactional(readOnly = true)
   @Override
   public List<EventJpaEntity> findAllByStreamId(StreamId streamId) {
@@ -41,6 +45,22 @@ public class EventRepositoryWithEntityManager implements EventRepository {
             e.id asc
         """)
       .setParameter(1, streamId.toValue())
+      .getResultList();
+  }
+
+  @Override
+  public List<EventJpaEntity> findAllByStreamIdAndFromVersion(StreamId streamId, int fromVersion) {
+    return entityManager.createQuery("""
+        select e
+        from EventJpaEntity e
+        where
+            e.streamId = ?1 and
+            e.version >= ?2
+        order by
+            e.id asc
+        """)
+      .setParameter(1, streamId.toValue())
+      .setParameter(2, fromVersion)
       .getResultList();
   }
 

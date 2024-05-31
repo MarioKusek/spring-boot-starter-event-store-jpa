@@ -36,8 +36,10 @@ public class EventStoreInMemory<E> extends EventStore<E> {
 
   @Override
   public List<Event<E>> getAllEventsFromVersion(StreamId streamId, int fromVersion) {
-    // TODO implement
-    throw new UnsupportedOperationException();
+    return events.stream()
+        .filter(e -> e.streamId().equals(streamId) && e.version() >= fromVersion)
+        .sorted((e1, e2) -> Integer.compare(e1.version(), e2.version()))
+        .collect(Collectors.toUnmodifiableList());
   }
 
   private int calculateNextVersion(StreamId id) {

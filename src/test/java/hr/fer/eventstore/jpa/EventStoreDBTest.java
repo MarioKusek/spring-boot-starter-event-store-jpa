@@ -1,6 +1,7 @@
 package hr.fer.eventstore.jpa;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
 
 import java.util.List;
 import java.util.Map;
@@ -86,10 +87,22 @@ class EventStoreDBTest extends TestContainersDbFixture {
     store.append(StreamId.of("user-mkusek"), "e3");
 
     assertThat(store.getAllEvents(StreamId.of("user-mkusek")))
-      .extracting("eventData")
-      .containsExactly("e1", "e3");
+      .extracting("eventData", "version")
+      .containsExactly(tuple("e1", 1), tuple("e3", 2));
     assertThat(store.getAllEvents(StreamId.of("user-pperic")))
-      .extracting("eventData")
-      .containsExactly("e2");
+      .extracting("eventData", "version")
+      .containsExactly(tuple("e2", 1));
+  }
+
+  @Test
+  void getEventsFromVersion() throws Exception {
+    StreamId streamId = StreamId.of("user-mkusek");
+    store.append(streamId, "e1");
+    store.append(streamId, "e2");
+    store.append(streamId, "e3");
+
+    assertThat(store.getAllEventsFromVersion(streamId, 2))
+      .extracting("eventData", "version")
+      .containsExactly(tuple("e2", 2), tuple("e3", 3));
   }
 }
