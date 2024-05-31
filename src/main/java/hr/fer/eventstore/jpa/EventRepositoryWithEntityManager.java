@@ -31,9 +31,6 @@ public class EventRepositoryWithEntityManager implements EventRepository {
       .getSingleResult();
   }
 
-  // TODO dodati 3 query-a:
-  // za sve agregate i pojedine tipove događaja
-
   @Transactional(readOnly = true)
   @Override
   public List<EventJpaEntity> findAllByStreamId(StreamId streamId) {

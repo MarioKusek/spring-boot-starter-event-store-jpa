@@ -64,7 +64,12 @@ public abstract class EventStore<D> {
    */
   public abstract List<Event<D>> getAllEventsStreamIdPrefixStartsWith(String streamIdPrefixStartsWith);
 
-  // TODO za sve događaje i pojedine tipove događaja (klase od eventData)
+  /**
+   * Returns all events with event type
+   *
+   * @param eventDataClasses
+   * @return
+   */
   public abstract List<Event<D>> getAllEventsForEventDataClass(Class<? extends D> ...eventDataClasses);
 
 }
