@@ -28,7 +28,7 @@ class EventStoreDBTest extends TestContainersDbFixture {
   @Autowired
   EventRepository repo;
 
-  EventStoreDB<String> store;
+  EventStoreDB<Object> store;
 
   @Configuration
   @ComponentScan(basePackages = {"hr.fer.eventstore"})
@@ -40,8 +40,11 @@ class EventStoreDBTest extends TestContainersDbFixture {
   @BeforeEach
   void setup() {
     repo.deleteAll();
-    List<ClassTriple> types = List.of(EventMapper.classTriple("string", 1, String.class));
-    EventMapper<String> mapper = new EventMapper<>(types);
+    List<ClassTriple> types = List.of(
+        EventMapper.classTriple("string", 1, String.class),
+        EventMapper.classTriple("int", 1, Integer.class)
+        );
+    EventMapper<Object> mapper = new EventMapper<>(types);
     store = new EventStoreDB<>(repo, mapper);
   }
 
@@ -55,9 +58,9 @@ class EventStoreDBTest extends TestContainersDbFixture {
     String data = "e1";
     store.append(StreamId.of("user-mkusek"), data);
 
-    List<Event<String>> allEvents = store.getAllEvents();
+    List<Event<Object>> allEvents = store.getAllEvents();
     assertThat(allEvents).hasSize(1);
-    Event<String> event = allEvents.getFirst();
+    Event<Object> event = allEvents.getFirst();
     assertThat(event.streamId()).isEqualTo(StreamId.of("user-mkusek"));
     assertThat(event.version()).isEqualTo(1);
     assertThat(event.eventType()).isEqualTo("string");
@@ -65,7 +68,7 @@ class EventStoreDBTest extends TestContainersDbFixture {
     assertThat(event.eventData()).isEqualTo(data);
   }
 
-  private Event<String> createEvent(String data, int version) {
+  private <D> Event<D> createEvent(D data, int version) {
     return new Event<>(StreamId.of("user-mkusek"), version, "string", 1, data, Map.of());
   }
 
@@ -134,6 +137,24 @@ class EventStoreDBTest extends TestContainersDbFixture {
     assertThat(store.getAllEventsStreamIdPrefixStartsWith("t"))
       .extracting("eventData")
       .containsExactlyInAnyOrder("e4");
+  }
+
+  @Test
+  void getEventsWithEventDataClass() throws Exception {
+    store.append(StreamId.of("user-mkusek"), "e1");
+    store.append(StreamId.of("user-pperic"), 2);
+    store.append(StreamId.of("user-mkusek"), "e3");
+    store.append(StreamId.of("truck-2456"), 4);
+
+    assertThat(store.getAllEventsForEventDataClass(String.class))
+      .extracting("eventData")
+      .containsExactlyInAnyOrder("e1", "e3");
+    assertThat(store.getAllEventsForEventDataClass(Integer.class))
+      .extracting("eventData")
+      .containsExactlyInAnyOrder(2, 4);
+    assertThat(store.getAllEventsForEventDataClass(String.class, Integer.class))
+      .extracting("eventData")
+      .containsExactlyInAnyOrder("e1", "e3", 2, 4);
   }
 
 }

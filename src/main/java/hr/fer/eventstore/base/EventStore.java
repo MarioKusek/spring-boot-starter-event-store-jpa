@@ -6,7 +6,7 @@ import java.util.Map;
 import hr.fer.eventstore.base.EventMapper.TypeVersion;
 
 public abstract class EventStore<D> {
-  private EventMapper<D> eventMapper;
+  protected final EventMapper<D> eventMapper;
 
   public EventStore(EventMapper<D> mapper) {
     eventMapper = mapper;
@@ -56,9 +56,15 @@ public abstract class EventStore<D> {
    * @return
    */
   public abstract List<Event<D>> getAllEventsStreamIdPrefixIs(String streamIdPrefix);
-  // TODO sve događaje čiji streamID.prefix počinje s nekim tekstom
+
+  /**
+   * Returns all events whose streamId has prefix that starts with.
+   * @param streamIdPrefixStartsWith
+   * @return
+   */
   public abstract List<Event<D>> getAllEventsStreamIdPrefixStartsWith(String streamIdPrefixStartsWith);
+
   // TODO za sve događaje i pojedine tipove događaja (klase od eventData)
-  //public abstract List<Event<D>> getAllEventsForEventDataClass(Class<?> ...eventDataClasses);
+  public abstract List<Event<D>> getAllEventsForEventDataClass(Class<? extends D> ...eventDataClasses);
 
 }

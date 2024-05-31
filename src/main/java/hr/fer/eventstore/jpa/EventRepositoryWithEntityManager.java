@@ -3,6 +3,8 @@ package hr.fer.eventstore.jpa;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.transaction.annotation.Transactional;
 
@@ -93,6 +95,27 @@ public class EventRepositoryWithEntityManager implements EventRepository {
       .setParameter(1, streamIdPrefixStartsWith)
       .getResultList();
   }
+
+  @Transactional(readOnly = true)
+  @Override
+  public List<EventJpaEntity> getAllEventsForEventDataClass(Set<String> eventTypeNames) {
+    String wherePart = eventTypeNames.stream()
+      .map(name -> "e.eventType = '" + name + "'")
+      .collect(Collectors.joining(" or "));
+
+    String queryString = """
+        select e
+        from EventJpaEntity e
+        where
+        """ +
+        wherePart;
+
+    return entityManager
+            .createQuery(queryString)
+            .getResultList();
+  }
+
+
 
   @Transactional
   @Override

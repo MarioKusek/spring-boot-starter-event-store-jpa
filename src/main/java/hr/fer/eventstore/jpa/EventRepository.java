@@ -3,6 +3,7 @@ package hr.fer.eventstore.jpa;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import hr.fer.eventstore.base.StreamId;
 
@@ -13,8 +14,7 @@ public interface EventRepository {
   List<EventJpaEntity> findAllByStreamIdAndFromVersion(StreamId streamId, int fromVersion);
   List<EventJpaEntity> getAllEventsStreamIdPrefixIs(String streamIdPrefix);
   List<EventJpaEntity> getAllEventsStreamIdPrefixStartsWith(String streamIdPrefixStartsWith);
-
-  // TODO za sve agregate i pojedine tipove događaja
+  List<EventJpaEntity> getAllEventsForEventDataClass(Set<String> eventTypeNames);
 
   long countByStreamId(String streamId);
 

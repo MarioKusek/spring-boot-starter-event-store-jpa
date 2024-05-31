@@ -1,6 +1,8 @@
 package hr.fer.eventstore.jpa;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import hr.fer.eventstore.base.Event;
 import hr.fer.eventstore.base.EventMapper;
@@ -64,6 +66,19 @@ public class EventStoreDB<D> extends EventStore<D> {
   @Override
   public List<Event<D>> getAllEventsStreamIdPrefixStartsWith(String streamIdPrefixStartsWith) {
     return repo.getAllEventsStreamIdPrefixStartsWith(streamIdPrefixStartsWith).stream()
+        .map(EventStoreDB.this::toEvent)
+        .toList();
+  }
+
+  @Override
+  public List<Event<D>> getAllEventsForEventDataClass(Class<? extends D>... eventDataClasses) {
+    Set<String> names = new HashSet<>();
+    for(Class<? extends D> c: eventDataClasses) {
+      names.add(eventMapper.getEventTypeVersion(c).type());
+    }
+
+
+    return repo.getAllEventsForEventDataClass(names).stream()
         .map(EventStoreDB.this::toEvent)
         .toList();
   }

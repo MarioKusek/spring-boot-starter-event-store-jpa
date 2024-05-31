@@ -1,8 +1,10 @@
 package hr.fer.eventstore.base;
 
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class EventStoreInMemory<E> extends EventStore<E> {
@@ -53,6 +55,18 @@ public class EventStoreInMemory<E> extends EventStore<E> {
   public List<Event<E>> getAllEventsStreamIdPrefixStartsWith(String streamIdPrefixStartsWith) {
     return events.stream()
         .filter(e -> e.streamId().prefix().startsWith(streamIdPrefixStartsWith))
+        .collect(Collectors.toUnmodifiableList());
+  }
+
+  @Override
+  public List<Event<E>> getAllEventsForEventDataClass(Class<? extends E> ...eventDataClasses) {
+    Set<String> names = new HashSet<>();
+    for(Class<? extends E> c: eventDataClasses) {
+      names.add(eventMapper.getEventTypeVersion(c).type());
+    }
+
+    return events.stream()
+        .filter(e -> names.contains(e.eventType()))
         .collect(Collectors.toUnmodifiableList());
   }
 

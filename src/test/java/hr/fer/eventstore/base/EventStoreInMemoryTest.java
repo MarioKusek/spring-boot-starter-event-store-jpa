@@ -3,10 +3,25 @@ package hr.fer.eventstore.base;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 
+import java.util.List;
+
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import hr.fer.eventstore.base.EventMapper.ClassTriple;
+
 class EventStoreInMemoryTest {
-  EventStore<String> store = new EventStoreInMemory<>(null);
+  EventStore<Object> store;
+
+  @BeforeEach
+  void setup() {
+    List<ClassTriple> types = List.of(
+        EventMapper.classTriple("string", 1, String.class),
+        EventMapper.classTriple("int", 1, Integer.class)
+        );
+    EventMapper<Object> mapper = new EventMapper<>(types);
+    store = new EventStoreInMemory<>(mapper);
+  }
 
   @Test
   void noEventsAfterInitialization() throws Exception {
@@ -80,8 +95,23 @@ class EventStoreInMemoryTest {
       .containsExactlyInAnyOrder("e4");
   }
 
-  private Event<String> createEvent(StreamId streamId, String string) {
-    return Event.of(streamId, null, 0, string, null);
+  @Test
+  void getEventsWithEventDataClass() throws Exception {
+    store.append(StreamId.of("user-mkusek"), "e1");
+    store.append(StreamId.of("user-pperic"), Integer.valueOf(2));
+    store.append(StreamId.of("user-mkusek"), "e3");
+    store.append(StreamId.of("truck-2456"), 4);
+
+    assertThat(store.getAllEventsForEventDataClass(String.class))
+      .extracting("eventData")
+      .containsExactlyInAnyOrder("e1", "e3");
+    assertThat(store.getAllEventsForEventDataClass(Integer.class))
+      .extracting("eventData")
+      .containsExactlyInAnyOrder(Integer.valueOf(2), Integer.valueOf(4));
+  }
+
+  private <D> Event<D> createEvent(StreamId streamId, D data) {
+    return Event.of(streamId, null, 0, data, null);
   }
 
 }
