@@ -1,14 +1,14 @@
-package hr.fer.eventstore.jpa;
+package hr.fer.event.store.jpa;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import hr.fer.eventstore.base.Event;
-import hr.fer.eventstore.base.EventMapper;
-import hr.fer.eventstore.base.EventMapper.TypeVersion;
-import hr.fer.eventstore.base.EventStore;
-import hr.fer.eventstore.base.StreamId;
+import hr.fer.event.Event;
+import hr.fer.event.StreamId;
+import hr.fer.event.store.EventMapper;
+import hr.fer.event.store.EventStore;
+import hr.fer.event.store.EventMapper.TypeVersion;
 import io.hypersistence.tsid.TSID.Factory;
 import jakarta.transaction.Transactional;
 

@@ -5,12 +5,12 @@ import java.util.Map;
 
 import org.springframework.util.Assert;
 
-import hr.fer.eventstore.base.Event;
-import hr.fer.eventstore.base.EventStore;
-import hr.fer.eventstore.base.Projection;
-import hr.fer.eventstore.base.StreamId;
-import hr.fer.eventstore.jpa.EventRepository;
-import hr.fer.eventstore.jpa.EventStoreDB;
+import hr.fer.event.Event;
+import hr.fer.event.Projection;
+import hr.fer.event.StreamId;
+import hr.fer.event.store.EventStore;
+import hr.fer.event.store.jpa.EventRepository;
+import hr.fer.event.store.jpa.EventStoreDB;
 import hr.fer.icecream_truck.commands.CreateTruck;
 import hr.fer.icecream_truck.commands.RestockFlavour;
 import hr.fer.icecream_truck.commands.SellFlavour;

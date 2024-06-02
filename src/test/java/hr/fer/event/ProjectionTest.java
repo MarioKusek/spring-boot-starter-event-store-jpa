@@ -1,4 +1,4 @@
-package hr.fer.eventstore.base;
+package hr.fer.event;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -6,6 +6,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.junit.jupiter.api.Test;
+
+import hr.fer.event.Event;
+import hr.fer.event.Projection;
+import hr.fer.event.StreamId;
 
 class ProjectionTest {
 

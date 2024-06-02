@@ -1,4 +1,4 @@
-package hr.fer.eventstore.jpa;
+package hr.fer.event.store.jpa;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
@@ -15,10 +15,10 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
-import hr.fer.eventstore.base.Event;
-import hr.fer.eventstore.base.EventMapper;
-import hr.fer.eventstore.base.EventMapper.ClassTriple;
-import hr.fer.eventstore.base.StreamId;
+import hr.fer.event.Event;
+import hr.fer.event.StreamId;
+import hr.fer.event.store.EventMapper;
+import hr.fer.event.store.EventMapper.ClassTriple;
 
 @DataJpaTest(showSql = true, properties = {
     "logging.level.org.springframework.test.context.transaction=TRACE"
@@ -31,7 +31,7 @@ class EventStoreDBTest extends TestContainersDbFixture {
   EventStoreDB<Object> store;
 
   @Configuration
-  @ComponentScan(basePackages = {"hr.fer.eventstore"})
+  @ComponentScan(basePackages = {"hr.fer.event.store"})
   @EnableAutoConfiguration
   static class MyTestConfig {
 

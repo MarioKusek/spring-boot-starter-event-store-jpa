@@ -3,7 +3,7 @@ package hr.fer.icecream_truck;
 import java.util.HashMap;
 import java.util.List;
 
-import hr.fer.eventstore.base.Event;
+import hr.fer.event.Event;
 import hr.fer.icecream_truck.events.FlavourRestocked;
 import hr.fer.icecream_truck.events.FlavourSold;
 import hr.fer.icecream_truck.events.StockChangeEvent;

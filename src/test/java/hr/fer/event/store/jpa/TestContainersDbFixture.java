@@ -1,4 +1,4 @@
-package hr.fer.eventstore.jpa;
+package hr.fer.event.store.jpa;
 
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;

@@ -1,4 +1,4 @@
-package hr.fer.eventstore.jpa;
+package hr.fer.event.store.jpa;
 
 import java.util.Collection;
 import java.util.List;
@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.transaction.annotation.Transactional;
 
-import hr.fer.eventstore.base.StreamId;
+import hr.fer.event.StreamId;
 import jakarta.persistence.EntityManager;
 
 public class EventRepositoryWithEntityManager implements EventRepository {

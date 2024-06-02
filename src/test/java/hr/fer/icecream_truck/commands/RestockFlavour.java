@@ -2,7 +2,7 @@ package hr.fer.icecream_truck.commands;
 
 import java.util.Map;
 
-import hr.fer.eventstore.base.StreamId;
+import hr.fer.event.StreamId;
 import hr.fer.icecream_truck.Amount;
 import hr.fer.icecream_truck.FlavourName;
 

@@ -1,7 +1,7 @@
 package hr.fer.icecream_truck;
 
-import hr.fer.eventstore.base.Event;
-import hr.fer.eventstore.base.Projection;
+import hr.fer.event.Event;
+import hr.fer.event.Projection;
 import hr.fer.icecream_truck.events.FlavourSold;
 import hr.fer.icecream_truck.events.TruckEventData;
 

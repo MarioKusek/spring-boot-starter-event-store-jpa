@@ -1,4 +1,4 @@
-package hr.fer.eventstore.base;
+package hr.fer.event.store;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
@@ -8,7 +8,12 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import hr.fer.eventstore.base.EventMapper.ClassTriple;
+import hr.fer.event.Event;
+import hr.fer.event.StreamId;
+import hr.fer.event.store.EventMapper;
+import hr.fer.event.store.EventStore;
+import hr.fer.event.store.EventStoreInMemory;
+import hr.fer.event.store.EventMapper.ClassTriple;
 
 class EventStoreInMemoryTest {
   EventStore<Object> store;

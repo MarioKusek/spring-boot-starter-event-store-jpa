@@ -1,9 +1,11 @@
-package hr.fer.eventstore.base;
+package hr.fer.event.store;
 
 import java.util.List;
 import java.util.Map;
 
-import hr.fer.eventstore.base.EventMapper.TypeVersion;
+import hr.fer.event.Event;
+import hr.fer.event.StreamId;
+import hr.fer.event.store.EventMapper.TypeVersion;
 
 public abstract class EventStore<D> {
   protected final EventMapper<D> eventMapper;

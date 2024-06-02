@@ -1,4 +1,4 @@
-package hr.fer.eventstore.jpa;
+package hr.fer.event.store.jpa;
 
 import javax.sql.DataSource;
 

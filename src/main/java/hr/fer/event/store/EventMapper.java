@@ -1,4 +1,4 @@
-package hr.fer.eventstore.base;
+package hr.fer.event.store;
 
 import java.util.HashMap;
 import java.util.List;

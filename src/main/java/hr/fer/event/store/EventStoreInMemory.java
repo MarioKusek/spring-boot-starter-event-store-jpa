@@ -1,4 +1,4 @@
-package hr.fer.eventstore.base;
+package hr.fer.event.store;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -6,6 +6,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import hr.fer.event.Event;
+import hr.fer.event.StreamId;
 
 public class EventStoreInMemory<E> extends EventStore<E> {
 

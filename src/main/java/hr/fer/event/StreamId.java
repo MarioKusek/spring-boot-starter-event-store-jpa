@@ -1,4 +1,4 @@
-package hr.fer.eventstore.base;
+package hr.fer.event;
 
 import java.util.Objects;
 

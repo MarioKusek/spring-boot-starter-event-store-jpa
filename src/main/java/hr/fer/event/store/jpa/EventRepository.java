@@ -1,11 +1,11 @@
-package hr.fer.eventstore.jpa;
+package hr.fer.event.store.jpa;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import hr.fer.eventstore.base.StreamId;
+import hr.fer.event.StreamId;
 
 public interface EventRepository {
   Collection<EventJpaEntity> findAll();

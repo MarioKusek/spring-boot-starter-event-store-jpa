@@ -1,4 +1,4 @@
-package hr.fer.eventstore.jpa;
+package hr.fer.event.store.jpa;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -14,7 +14,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
-import hr.fer.eventstore.base.StreamId;
+import hr.fer.event.StreamId;
 import io.hypersistence.tsid.TSID.Factory;
 
 @DataJpaTest(showSql = true)
@@ -25,7 +25,7 @@ class EventRepositoryTest extends TestContainersDbFixture {
   private EventRepository repo;
 
   @Configuration
-  @ComponentScan(basePackages = {"hr.fer.eventstore"})
+  @ComponentScan(basePackages = {"hr.fer.event.store"})
   @EnableAutoConfiguration
   static class MyTestConfig {
 

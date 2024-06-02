@@ -3,10 +3,10 @@ package hr.fer.icecream_truck;
 import java.util.List;
 import java.util.Map;
 
-import hr.fer.eventstore.base.Event;
-import hr.fer.eventstore.base.EventMapper;
-import hr.fer.eventstore.base.EventMapper.TypeVersion;
-import hr.fer.eventstore.base.StreamId;
+import hr.fer.event.Event;
+import hr.fer.event.StreamId;
+import hr.fer.event.store.EventMapper;
+import hr.fer.event.store.EventMapper.TypeVersion;
 import hr.fer.icecream_truck.events.FlavourRestocked;
 import hr.fer.icecream_truck.events.FlavourSold;
 import hr.fer.icecream_truck.events.FlavourWasNotInStock;
