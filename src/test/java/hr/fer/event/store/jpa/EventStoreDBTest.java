@@ -56,12 +56,12 @@ class EventStoreDBTest extends TestContainersDbFixture {
   @Test
   void appendOneEvent() throws Exception {
     String data = "e1";
-    store.append(StreamId.of("user-mkusek"), data);
+    store.append(StreamId.ofValue("user-mkusek"), data);
 
     List<Event<Object>> allEvents = store.getAllEvents();
     assertThat(allEvents).hasSize(1);
     Event<Object> event = allEvents.getFirst();
-    assertThat(event.streamId()).isEqualTo(StreamId.of("user-mkusek"));
+    assertThat(event.streamId()).isEqualTo(StreamId.ofValue("user-mkusek"));
     assertThat(event.version()).isEqualTo(1);
     assertThat(event.eventType()).isEqualTo("string");
     assertThat(event.eventTypeVersion()).isEqualTo(1);
@@ -69,7 +69,7 @@ class EventStoreDBTest extends TestContainersDbFixture {
   }
 
   private <D> Event<D> createEvent(D data, int version) {
-    return new Event<>(StreamId.of("user-mkusek"), version, "string", 1, data, Map.of());
+    return new Event<>(StreamId.ofValue("user-mkusek"), version, "string", 1, data, Map.of());
   }
 
   @Test
@@ -85,21 +85,21 @@ class EventStoreDBTest extends TestContainersDbFixture {
 
   @Test
   void appendMoreEventsInDifferentStreams() throws Exception {
-    store.append(StreamId.of("user-mkusek"), "e1");
-    store.append(StreamId.of("user-pperic"), "e2");
-    store.append(StreamId.of("user-mkusek"), "e3");
+    store.append(StreamId.ofValue("user-mkusek"), "e1");
+    store.append(StreamId.ofValue("user-pperic"), "e2");
+    store.append(StreamId.ofValue("user-mkusek"), "e3");
 
-    assertThat(store.getAllEvents(StreamId.of("user-mkusek")))
+    assertThat(store.getAllEvents(StreamId.ofValue("user-mkusek")))
       .extracting("eventData", "version")
       .containsExactly(tuple("e1", 1), tuple("e3", 2));
-    assertThat(store.getAllEvents(StreamId.of("user-pperic")))
+    assertThat(store.getAllEvents(StreamId.ofValue("user-pperic")))
       .extracting("eventData", "version")
       .containsExactly(tuple("e2", 1));
   }
 
   @Test
   void getEventsFromVersion() throws Exception {
-    StreamId streamId = StreamId.of("user-mkusek");
+    StreamId streamId = StreamId.ofValue("user-mkusek");
     store.append(streamId, "e1");
     store.append(streamId, "e2");
     store.append(streamId, "e3");
@@ -111,10 +111,10 @@ class EventStoreDBTest extends TestContainersDbFixture {
 
   @Test
   void getEventsWithStreamIdPrefix() throws Exception {
-    store.append(StreamId.of("user-mkusek"), "e1");
-    store.append(StreamId.of("user-pperic"), "e2");
-    store.append(StreamId.of("user-mkusek"), "e3");
-    store.append(StreamId.of("truck-2456"), "e4");
+    store.append(StreamId.ofValue("user-mkusek"), "e1");
+    store.append(StreamId.ofValue("user-pperic"), "e2");
+    store.append(StreamId.ofValue("user-mkusek"), "e3");
+    store.append(StreamId.ofValue("truck-2456"), "e4");
 
     assertThat(store.getAllEventsStreamIdPrefixIs("user"))
       .extracting("eventData")
@@ -126,10 +126,10 @@ class EventStoreDBTest extends TestContainersDbFixture {
 
   @Test
   void getEventsWithStreamIdPrefixStartsWith() throws Exception {
-    store.append(StreamId.of("user-mkusek"), "e1");
-    store.append(StreamId.of("user-pperic"), "e2");
-    store.append(StreamId.of("user-mkusek"), "e3");
-    store.append(StreamId.of("truck-2456"), "e4");
+    store.append(StreamId.ofValue("user-mkusek"), "e1");
+    store.append(StreamId.ofValue("user-pperic"), "e2");
+    store.append(StreamId.ofValue("user-mkusek"), "e3");
+    store.append(StreamId.ofValue("truck-2456"), "e4");
 
     assertThat(store.getAllEventsStreamIdPrefixStartsWith("u"))
       .extracting("eventData")
@@ -141,10 +141,10 @@ class EventStoreDBTest extends TestContainersDbFixture {
 
   @Test
   void getEventsWithEventDataClass() throws Exception {
-    store.append(StreamId.of("user-mkusek"), "e1");
-    store.append(StreamId.of("user-pperic"), 2);
-    store.append(StreamId.of("user-mkusek"), "e3");
-    store.append(StreamId.of("truck-2456"), 4);
+    store.append(StreamId.ofValue("user-mkusek"), "e1");
+    store.append(StreamId.ofValue("user-pperic"), 2);
+    store.append(StreamId.ofValue("user-mkusek"), "e3");
+    store.append(StreamId.ofValue("truck-2456"), 4);
 
     assertThat(store.getAllEventsForEventDataClass(String.class))
       .extracting("eventData")

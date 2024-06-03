@@ -1,37 +1,40 @@
 package hr.fer.event;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import io.hypersistence.tsid.TSID;
 
-public final class StreamId {
-  private String prefix;
-  private String randomValue;
+public final class StreamId implements Iterable<String> {
+  private List<String> segments;
 
-  private StreamId(String prefix, String randomValue) {
-    this.prefix = prefix;
-    this.randomValue = randomValue;
+  private StreamId(String ...segments) {
+    this(Arrays.asList(segments).stream()
+        .filter(s -> !s.isEmpty())
+        .toList());
   }
 
-  public String prefix() {
-    return prefix;
+  private StreamId(List<String> segments) {
+    for(var s: segments)
+      if(s.contains("-"))
+        throw new IllegalArgumentException("Segments can not have '-'.");
 
-  }
-
-  public String random() {
-    return randomValue;
+    this.segments = new ArrayList<>(segments);
   }
 
   public String toValue() {
-    if(prefix.isEmpty())
-      return randomValue;
-    else
-      return String.format("%s-%s", prefix, randomValue);
+    return segments.stream()
+        .collect(Collectors.joining("-"));
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(prefix, randomValue);
+    return Objects.hash(segments);
   }
 
   @Override
@@ -41,7 +44,7 @@ public final class StreamId {
     if (!(obj instanceof StreamId))
       return false;
     StreamId other = (StreamId) obj;
-    return Objects.equals(prefix, other.prefix) && Objects.equals(randomValue, other.randomValue);
+    return Objects.equals(segments, other.segments);
   }
 
   @Override
@@ -49,24 +52,43 @@ public final class StreamId {
     return String.format("StreamId[value: %s]", toValue());
   }
 
-  public static StreamId of(String value) {
-    int indexOfDivider = value.lastIndexOf("-");
-    if (indexOfDivider == -1)
-      return new StreamId("", value);
-    else
-      return new StreamId(value.substring(0, indexOfDivider),
-          value.substring(indexOfDivider + 1, value.length()));
+  public static StreamId ofValue(String value) {
+    String[] segmentsArray = value.split("-");
+
+    return new StreamId(segmentsArray);
   }
 
-  public static StreamId ofPrefix(String prefix) {
-    return of(prefix + "-" + TSID.fast().toString());
+  public static StreamId withRandom(String ...segments) {
+    List<String> list = new LinkedList<>(Arrays.asList(segments));
+    list.add(TSID.fast().toString());
+    return new StreamId(list);
   }
 
-  public static StreamId of(String prefix, String randomValue) {
-    if(randomValue.contains("-"))
-      throw new IllegalArgumentException("Random value can not have '-'.");
-    return new StreamId(prefix, randomValue);
+  public static StreamId ofSegments(String ...segments) {
+    return new StreamId(segments);
   }
 
+  public String prefix() {
+    return segments.stream()
+        .limit(segments.size()-1)
+        .collect(Collectors.joining("-"));
+  }
+
+  public String lastSegment() {
+    return segments.getLast();
+  }
+
+  public int segmentSize() {
+    return segments.size();
+  }
+
+  public String segment(int index) {
+    return segments.get(index);
+  }
+
+  @Override
+  public Iterator<String> iterator() {
+    return segments.iterator();
+  }
 
 }

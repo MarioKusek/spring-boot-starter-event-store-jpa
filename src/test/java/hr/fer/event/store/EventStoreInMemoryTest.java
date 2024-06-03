@@ -35,7 +35,7 @@ class EventStoreInMemoryTest {
 
   @Test
   void appendOneEvent() throws Exception {
-    store.append(createEvent(StreamId.of("notImportant"), "e1"));
+    store.append(createEvent(StreamId.ofValue("notImportant"), "e1"));
 
     assertThat(store.getAllEvents())
       .extracting("eventData", "version")
@@ -44,7 +44,7 @@ class EventStoreInMemoryTest {
 
   @Test
   void appendMoreEvents() throws Exception {
-    StreamId streamId = StreamId.of("someStreamId");
+    StreamId streamId = StreamId.ofValue("someStreamId");
 
     store.append(createEvent(streamId, "e1"));
     store.append(createEvent(streamId, "e2"));
@@ -60,7 +60,7 @@ class EventStoreInMemoryTest {
 
   @Test
   void getEventsFromVersion() throws Exception {
-    StreamId streamId = StreamId.of("user-mkusek");
+    StreamId streamId = StreamId.ofValue("user-mkusek");
     store.append(createEvent(streamId, "e1"));
     store.append(createEvent(streamId, "e2"));
     store.append(createEvent(streamId, "e3"));
@@ -72,10 +72,10 @@ class EventStoreInMemoryTest {
 
   @Test
   void getEventsWithStreamIdPrefix() throws Exception {
-    store.append(createEvent(StreamId.of("user-mkusek"), "e1"));
-    store.append(createEvent(StreamId.of("user-pperic"), "e2"));
-    store.append(createEvent(StreamId.of("user-mkusek"), "e3"));
-    store.append(createEvent(StreamId.of("truck-2456"), "e4"));
+    store.append(createEvent(StreamId.ofValue("user-mkusek"), "e1"));
+    store.append(createEvent(StreamId.ofValue("user-pperic"), "e2"));
+    store.append(createEvent(StreamId.ofValue("user-mkusek"), "e3"));
+    store.append(createEvent(StreamId.ofValue("truck-2456"), "e4"));
 
     assertThat(store.getAllEventsStreamIdPrefixIs("user"))
       .extracting("eventData")
@@ -87,10 +87,10 @@ class EventStoreInMemoryTest {
 
   @Test
   void getEventsWithStreamIdPrefixStartsWith() throws Exception {
-    store.append(createEvent(StreamId.of("user-mkusek"), "e1"));
-    store.append(createEvent(StreamId.of("user-pperic"), "e2"));
-    store.append(createEvent(StreamId.of("user-mkusek"), "e3"));
-    store.append(createEvent(StreamId.of("truck-2456"), "e4"));
+    store.append(createEvent(StreamId.ofValue("user-mkusek"), "e1"));
+    store.append(createEvent(StreamId.ofValue("user-pperic"), "e2"));
+    store.append(createEvent(StreamId.ofValue("user-mkusek"), "e3"));
+    store.append(createEvent(StreamId.ofValue("truck-2456"), "e4"));
 
     assertThat(store.getAllEventsStreamIdPrefixStartsWith("u"))
       .extracting("eventData")
@@ -102,10 +102,10 @@ class EventStoreInMemoryTest {
 
   @Test
   void getEventsWithEventDataClass() throws Exception {
-    store.append(StreamId.of("user-mkusek"), "e1");
-    store.append(StreamId.of("user-pperic"), Integer.valueOf(2));
-    store.append(StreamId.of("user-mkusek"), "e3");
-    store.append(StreamId.of("truck-2456"), 4);
+    store.append(StreamId.ofValue("user-mkusek"), "e1");
+    store.append(StreamId.ofValue("user-pperic"), Integer.valueOf(2));
+    store.append(StreamId.ofValue("user-mkusek"), "e3");
+    store.append(StreamId.ofValue("truck-2456"), 4);
 
     assertThat(store.getAllEventsForEventDataClass(String.class))
       .extracting("eventData")

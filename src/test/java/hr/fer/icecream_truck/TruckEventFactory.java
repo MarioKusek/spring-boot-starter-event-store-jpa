@@ -50,7 +50,7 @@ public class TruckEventFactory {
   }
 
   public Event<TruckEventData> createTruck(Map<String, String> metaData) {
-    StreamId truckId = StreamId.ofPrefix("truck");
+    StreamId truckId = StreamId.withRandom("truck");
     TruckCreatedEvent eventData = new TruckCreatedEvent(truckId.toValue());
     TypeVersion et = mapper.getEventTypeVersion(TruckCreatedEvent.class);
     return Event.of(truckId, et.type(), et.version(), eventData, metaData);
