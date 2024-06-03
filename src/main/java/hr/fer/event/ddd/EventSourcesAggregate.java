@@ -4,7 +4,7 @@ import java.util.List;
 
 import hr.fer.event.Event;
 
-public abstract class EventSourcesAggregate<D> {
+public abstract class EventSourcesAggregate<D, C> {
   public EventSourcesAggregate(List<Event<D>> events) {
     validateEvents(events);
     evolveState(events);
@@ -23,4 +23,5 @@ public abstract class EventSourcesAggregate<D> {
 
   protected abstract void evolveState(Event<D> event);
 
+  public abstract Result<? extends RuntimeException, Event<D>> handle(C command);
 }
