@@ -3,18 +3,19 @@ plugins {
 	id 'org.springframework.boot' version '3.3.0'
 	id 'io.spring.dependency-management' version '1.1.5'
 	id 'maven-publish'
+	id "com.github.ben-manes.versions" version "0.51.0"
 }
 
 group = 'hr.fer.eventstore'
 version = '0.0.1-SNAPSHOT'
 
 ext {
-    set('testcontainers.version', "1.19.7")
+    set('testcontainers.version', "1.19.8")
 }
 
 java {
 	sourceCompatibility = '21'
-    //withJavadocJar()
+    withJavadocJar()
     withSourcesJar()
 }
 
@@ -29,7 +30,7 @@ dependencies {
 	
 	implementation 'org.springframework.boot:spring-boot-starter'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	implementation 'io.hypersistence:hypersistence-utils-hibernate-63:3.7.5'
+	implementation 'io.hypersistence:hypersistence-utils-hibernate-63:3.7.6'
 	runtimeOnly 'org.postgresql:postgresql'
 	
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
