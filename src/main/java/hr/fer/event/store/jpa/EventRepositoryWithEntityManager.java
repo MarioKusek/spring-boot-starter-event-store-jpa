@@ -6,11 +6,13 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import hr.fer.event.StreamId;
 import jakarta.persistence.EntityManager;
 
+@Component
 public class EventRepositoryWithEntityManager implements EventRepository {
   private EntityManager entityManager;
 
