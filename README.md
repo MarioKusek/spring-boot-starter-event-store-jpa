@@ -775,7 +775,7 @@ In `build.gradle` we need to pu dependencies:
 
 ```groovy
 dependencies {
-	implementation "hr.fer.eventstore:spring-boot-starter-event-store-jpa:${version}"" // starter
+	implementation "hr.fer.tel.eventstore:spring-boot-starter-event-store-jpa:${version}"" // starter
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa' // jpa
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'io.hypersistence:hypersistence-utils-hibernate-63:3.7.5' // potrebno za TSID
