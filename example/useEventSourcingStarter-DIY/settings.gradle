@@ -1,4 +1,3 @@
 rootProject.name = 'useEventSourcingStarter-DIY'
 
-//includeBuild('../../', {name = 'spring-boot-starter-event-store-jpa'})
 includeBuild('../..')
