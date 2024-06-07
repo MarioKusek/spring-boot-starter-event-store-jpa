@@ -4,7 +4,7 @@ plugins {
 	id 'io.spring.dependency-management' version '1.1.5'
 }
 
-group = 'hr.fer.tel.eventstore'
+group = 'hr.fer.tel'
 version = '0.0.1-SNAPSHOT'
 
 java {
@@ -17,7 +17,7 @@ repositories {
 }
 
 dependencies {
-	implementation 'hr.fer.tel.eventstore:spring-boot-starter-event-store-jpa'
+	implementation 'hr.fer.tel:spring-boot-starter-event-store-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'io.hypersistence:hypersistence-utils-hibernate-63:3.7.5'
