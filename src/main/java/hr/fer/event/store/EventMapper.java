@@ -6,9 +6,13 @@ import java.util.Map;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.json.JsonMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 public class EventMapper<D> {
-  private static final ObjectMapper mapper = new ObjectMapper();
+  private static final ObjectMapper mapper = JsonMapper.builder()
+      .addModule(new JavaTimeModule())
+      .build();
 
   public static record TypeVersion(String type, int version) {}
 
