@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import io.hypersistence.tsid.TSID;
 
 public final class StreamId implements Iterable<String> {
+  private static String DELIMITER = "-";
   private List<String> segments;
 
   private StreamId(String ...segments) {
@@ -21,15 +22,15 @@ public final class StreamId implements Iterable<String> {
 
   private StreamId(List<String> segments) {
     for(var s: segments)
-      if(s.contains("-"))
-        throw new IllegalArgumentException("Segments can not have '-'.");
+      if(s.contains(DELIMITER))
+        throw new IllegalArgumentException("Segments can not have '" + DELIMITER + "'.");
 
     this.segments = new ArrayList<>(segments);
   }
 
   public String toValue() {
     return segments.stream()
-        .collect(Collectors.joining("-"));
+        .collect(Collectors.joining(DELIMITER));
   }
 
   @Override
@@ -53,7 +54,7 @@ public final class StreamId implements Iterable<String> {
   }
 
   public static StreamId ofValue(String value) {
-    String[] segmentsArray = value.split("-");
+    String[] segmentsArray = value.split(DELIMITER);
 
     return new StreamId(segmentsArray);
   }
@@ -71,7 +72,7 @@ public final class StreamId implements Iterable<String> {
   public String prefix() {
     return segments.stream()
         .limit(segments.size()-1)
-        .collect(Collectors.joining("-"));
+        .collect(Collectors.joining(DELIMITER));
   }
 
   public String lastSegment() {
@@ -89,6 +90,14 @@ public final class StreamId implements Iterable<String> {
   @Override
   public Iterator<String> iterator() {
     return segments.iterator();
+  }
+
+  public static void setDelimiter(String delimiter) {
+    DELIMITER = delimiter;
+  }
+
+  public static String getDelimiter() {
+    return DELIMITER;
   }
 
 }

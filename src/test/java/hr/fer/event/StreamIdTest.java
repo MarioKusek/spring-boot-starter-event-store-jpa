@@ -3,9 +3,15 @@ package hr.fer.event;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class StreamIdTest {
+
+  @BeforeEach
+  void setup() {
+    StreamId.setDelimiter("-");
+  }
 
   @Test
   void of_withoutPrefix() throws Exception {
@@ -58,9 +64,20 @@ class StreamIdTest {
   }
 
   @Test
-  void of_withSegementsThatHaveHyphen() throws Exception {
+  void of_withSegementsThatHaveDefaultDelimiter() throws Exception {
     assertThrows(IllegalArgumentException.class, () -> {
       StreamId.ofSegments("some-prefix", "some-random-value");
+    });
+  }
+
+  @Test
+  void of_withSegementsThatHaveCustomDelimiter() throws Exception {
+    StreamId.setDelimiter(":");
+
+    assertThat(StreamId.ofSegments("some-prefix", "some-random-value").toValue()).isEqualTo("some-prefix:some-random-value");
+
+    assertThrows(IllegalArgumentException.class, () -> {
+      StreamId.ofSegments("some:prefix", "some:random:value");
     });
   }
 
