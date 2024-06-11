@@ -780,7 +780,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'io.hypersistence:hypersistence-utils-hibernate-63:3.7.5' // potrebno za TSID
 	
-	runtimeOnly 'org.postgresql:postgresql' // driver za bazu
+	runtimeOnly 'org.postgresql:postgresql' // driver for DB
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
