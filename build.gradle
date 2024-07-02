@@ -126,3 +126,11 @@ jreleaser {
     }
   }
 }
+
+// release
+// 1. gradle clean build
+// 2. gradle publish
+// 3. gradle jreleaserFullRelease
+// 4. check on https://central.sonatype.com/publishing/deployments if it is deployed
+
+
