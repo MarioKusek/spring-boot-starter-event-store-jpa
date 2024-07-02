@@ -57,8 +57,10 @@ class EventStoreDBTest extends TestContainersDbFixture {
   @Test
   void appendOneEvent() throws Exception {
     String data = "e1";
-    store.append(StreamId.ofValue("user-mkusek"), data);
 
+    int version = store.append(StreamId.ofValue("user-mkusek"), data);
+
+    assertThat(version).isEqualTo(1);
     List<Event<Object>> allEvents = store.getAllEvents();
     assertThat(allEvents).hasSize(1);
     Event<Object> event = allEvents.getFirst();

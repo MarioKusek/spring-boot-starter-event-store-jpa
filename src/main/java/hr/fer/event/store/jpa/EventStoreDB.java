@@ -25,9 +25,10 @@ public class EventStoreDB<D> extends EventStore<D> {
 
   @Override
   @Transactional
-  public void append(Event<D> event) {
+  public int append(Event<D> event) {
     EventJpaEntity eventEntity = createEventEntity(event);
     repo.save(eventEntity);
+    return eventEntity.getVersion();
   }
 
   @Override

@@ -20,11 +20,15 @@ public class EventStoreInMemory<E> extends EventStore<E> {
   private List<Event<E>> events = new LinkedList<>();
 
   @Override
-  public void append(Event<E> event) {
-    if(event.version() < 1)
-      events.add(event.copyWithVersion(calculateNextVersion(event.streamId())));
-    else
+  public int append(Event<E> event) {
+    if(event.version() < 1) {
+      final Event<E> eventWithNewVersion = event.copyWithVersion(calculateNextVersion(event.streamId()));
+      events.add(eventWithNewVersion);
+      return eventWithNewVersion.version();
+    } else {
       events.add(event);
+      return event.version();
+    }
   }
 
   @Override

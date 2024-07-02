@@ -33,8 +33,9 @@ class EventStoreInMemoryTest {
 
   @Test
   void appendOneEvent() throws Exception {
-    store.append(createEvent(StreamId.ofValue("notImportant"), "e1"));
+    int version = store.append(createEvent(StreamId.ofValue("notImportant"), "e1"));
 
+    assertThat(version).isEqualTo(1);
     assertThat(store.getAllEvents())
       .extracting("eventData", "version")
       .containsExactly(tuple("e1", 1));
