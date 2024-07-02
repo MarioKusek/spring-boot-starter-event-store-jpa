@@ -498,10 +498,11 @@ public abstract class EventStore<D> {
    * If event version is -1 then it should be replaced with current version of the streamId
    *
    * @param event the event that should be saved
+   * @return version of event in stream
    */
-  public abstract void append(Event<D> event);
+  public abstract int append(Event<D> event);
 
-  public void append(StreamId id, D eventData, Map<String, String> metaData) {
+  public int append(StreamId id, D eventData, Map<String, String> metaData) {
     @SuppressWarnings("unchecked")
     Class<? extends D> eventClass = (Class<? extends D>) eventData.getClass();
     TypeVersion vt = eventMapper.getEventTypeVersion(eventClass);
@@ -514,7 +515,7 @@ public abstract class EventStore<D> {
     }
   }
 
-  public void append(StreamId id, D eventData) {
+  public int append(StreamId id, D eventData) {
     append(id, eventData, Map.of());
   }
 
@@ -623,11 +624,15 @@ public class EventStoreInMemory<E> extends EventStore<E> {
   private List<Event<E>> events = new LinkedList<>();
 
   @Override
-  public void append(Event<E> event) {
-    if(event.version() < 1)
-      events.add(event.copyWithVersion(calculateNextVersion(event.streamId())));
-    else
+  public int append(Event<E> event) {
+    if(event.version() < 1) {
+      final Event<E> eventWithNewVersion = event.copyWithVersion(calculateNextVersion(event.streamId()));
+      events.add(eventWithNewVersion);
+      return eventWithNewVersion.version();
+    } else {
       events.add(event);
+      return event.version();
+    }
   }
 
   @Override
