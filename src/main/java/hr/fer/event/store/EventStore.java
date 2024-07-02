@@ -2,6 +2,7 @@ package hr.fer.event.store;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import hr.fer.event.Event;
 import hr.fer.event.StreamId;
@@ -44,6 +45,15 @@ public abstract class EventStore<D> {
   public abstract List<Event<D>> getAllEvents(StreamId streamId);
 
   /**
+   * Returns specific event by streamId and version.
+   *
+   * @param streamId
+   * @param version
+   * @return
+   */
+  public abstract Optional<Event<D>> getEvent(StreamId streamId, int version);
+
+  /**
    * Returns all events from version.
    *
    * @param streamId
@@ -51,6 +61,7 @@ public abstract class EventStore<D> {
    * @return
    */
   public abstract List<Event<D>> getAllEventsFromVersion(StreamId streamId, int fromVersion);
+
   /**
    * Returns all events whose streamId has prefix.
    *

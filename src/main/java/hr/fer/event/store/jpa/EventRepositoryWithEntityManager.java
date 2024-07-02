@@ -50,6 +50,25 @@ public class EventRepositoryWithEntityManager implements EventRepository {
 
   @Transactional(readOnly = true)
   @Override
+  public Optional<EventJpaEntity> findByStreamIdAndVersion(StreamId streamId, int version) {
+    try {
+      return Optional.of((EventJpaEntity) entityManager.createQuery("""
+          select e
+          from EventJpaEntity e
+          where
+              e.streamId = ?1 and
+              e.version = ?2
+          """)
+        .setParameter(1, streamId.toValue())
+        .setParameter(2, version)
+        .getSingleResult());
+    } catch (Exception e) {
+      return Optional.empty();
+    }
+  }
+
+  @Transactional(readOnly = true)
+  @Override
   public List<EventJpaEntity> findAllByStreamIdAndFromVersion(StreamId streamId, int fromVersion) {
     return entityManager.createQuery("""
         select e

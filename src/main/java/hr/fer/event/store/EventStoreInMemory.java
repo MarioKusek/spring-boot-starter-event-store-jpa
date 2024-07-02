@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -37,6 +38,13 @@ public class EventStoreInMemory<E> extends EventStore<E> {
       .filter(e -> e.streamId().equals(streamId))
       .sorted((e1, e2) -> Integer.compare(e1.version(), e2.version()))
       .collect(Collectors.toUnmodifiableList());
+  }
+
+  @Override
+  public Optional<Event<E>> getEvent(StreamId streamId, int version) {
+    return events.stream()
+        .filter(e -> e.streamId().equals(streamId) && e.version() == version)
+        .findFirst();
   }
 
   @Override

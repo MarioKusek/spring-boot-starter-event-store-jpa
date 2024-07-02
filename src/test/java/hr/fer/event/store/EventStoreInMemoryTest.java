@@ -4,15 +4,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import hr.fer.event.Event;
 import hr.fer.event.StreamId;
-import hr.fer.event.store.EventMapper;
-import hr.fer.event.store.EventStore;
-import hr.fer.event.store.EventStoreInMemory;
 import hr.fer.event.store.EventMapper.ClassTriple;
 
 class EventStoreInMemoryTest {
@@ -56,6 +54,31 @@ class EventStoreInMemoryTest {
           tuple("e1", 1),
           tuple("e2", 2),
           tuple("e3", 3));
+  }
+
+  @Test
+  void getEvent() throws Exception {
+    StreamId streamId = StreamId.ofValue("user-mkusek");
+    store.append(createEvent(streamId, "e1"));
+    store.append(createEvent(streamId, "e2"));
+    store.append(createEvent(streamId, "e3"));
+
+    final Optional<Event<Object>> optional = store.getEvent(streamId, 2);
+
+    assertThat(optional).isPresent();
+    assertThat(optional.get().eventData()).isEqualTo("e2");
+  }
+
+  @Test
+  void getNotExistingEvent() throws Exception {
+    StreamId streamId = StreamId.ofValue("user-mkusek");
+    store.append(createEvent(streamId, "e1"));
+    store.append(createEvent(streamId, "e2"));
+    store.append(createEvent(streamId, "e3"));
+
+    final Optional<Event<Object>> optional = store.getEvent(streamId, 5);
+
+    assertThat(optional).isEmpty();
   }
 
   @Test

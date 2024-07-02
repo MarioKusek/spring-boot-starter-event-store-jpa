@@ -2,13 +2,14 @@ package hr.fer.event.store.jpa;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import hr.fer.event.Event;
 import hr.fer.event.StreamId;
 import hr.fer.event.store.EventMapper;
-import hr.fer.event.store.EventStore;
 import hr.fer.event.store.EventMapper.TypeVersion;
+import hr.fer.event.store.EventStore;
 import io.hypersistence.tsid.TSID.Factory;
 import jakarta.transaction.Transactional;
 
@@ -47,6 +48,12 @@ public class EventStoreDB<D> extends EventStore<D> {
     return repo.findAllByStreamId(streamId).stream()
       .map(EventStoreDB.this::toEvent)
       .toList();
+  }
+
+  @Override
+  public Optional<Event<D>> getEvent(StreamId streamId, int version) {
+    return repo.findByStreamIdAndVersion(streamId, version)
+        .map(EventStoreDB.this::toEvent);
   }
 
   @Override

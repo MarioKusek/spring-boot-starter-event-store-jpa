@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.tuple;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -95,6 +96,31 @@ class EventStoreDBTest extends TestContainersDbFixture {
     assertThat(store.getAllEvents(StreamId.ofValue("user-pperic")))
       .extracting("eventData", "version")
       .containsExactly(tuple("e2", 1));
+  }
+
+  @Test
+  void getEvent() throws Exception {
+    StreamId streamId = StreamId.ofValue("user-mkusek");
+    store.append(streamId, "e1");
+    store.append(streamId, "e2");
+    store.append(streamId, "e3");
+
+    final Optional<Event<Object>> optional = store.getEvent(streamId, 2);
+
+    assertThat(optional).isNotEmpty();
+    assertThat(optional.get().eventData()).isEqualTo("e2");
+  }
+
+  @Test
+  void getNotExistingEvent() throws Exception {
+    StreamId streamId = StreamId.ofValue("user-mkusek");
+    store.append(streamId, "e1");
+    store.append(streamId, "e2");
+    store.append(streamId, "e3");
+
+    final Optional<Event<Object>> optional = store.getEvent(streamId, 5);
+
+    assertThat(optional).isEmpty();
   }
 
   @Test

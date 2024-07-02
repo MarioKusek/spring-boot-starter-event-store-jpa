@@ -11,6 +11,7 @@ public interface EventRepository {
   Collection<EventJpaEntity> findAll();
   Optional<EventJpaEntity> findById(long id);
   List<EventJpaEntity> findAllByStreamId(StreamId streamId);
+  Optional<EventJpaEntity> findByStreamIdAndVersion(StreamId streamId, int version);
   List<EventJpaEntity> findAllByStreamIdAndFromVersion(StreamId streamId, int fromVersion);
   List<EventJpaEntity> getAllEventsStreamIdPrefixIs(String streamIdPrefix);
   List<EventJpaEntity> getAllEventsStreamIdPrefixStartsWith(String streamIdPrefixStartsWith);
