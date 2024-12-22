@@ -17,11 +17,11 @@ services:
       POSTGRES_PASSWORD: spasswd
       PGDATA: /opt/eventStore/postgresql
     volumes:
-      - 'eventstore_data_fepa:/opt/eventStore/postgresql'
+      - 'eventstore_data:/opt/eventStore/postgresql'
 
 
 volumes:
-  eventstore_data_fepa:
+  eventstore_data:
     driver: local
 
 networks:
